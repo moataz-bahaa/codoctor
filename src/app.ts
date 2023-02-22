@@ -4,15 +4,14 @@ import morgan from 'morgan';
 import 'express-async-errors';
 import helmet from 'helmet';
 import { Server } from 'socket.io';
+import path from 'path';
 
 // middlewares
-import errorHandler from './middlewares/error-handler.js';
 
 // routes
-import adminRoutes from './routes/admin.js';
-import doctorRoutes from './routes/doctor.js';
-import patientRoutes from './routes/patient.js';
-import path from 'path';
+import adminRoutes from './routes/admin';
+import doctorRoutes from './routes/doctor';
+import patientRoutes from './routes/patient';
 
 const app = express();
 
@@ -27,11 +26,9 @@ app.use(helmet()); // adds some http headers for security
 app.use(express.static(path.resolve('data')));
 
 // routes
-app.use('/admin', adminRoutes);
-app.use('/patient', patientRoutes);
-app.use('/doctor', doctorRoutes);
-
-app.use(errorHandler);
+app.use('/api/admin', adminRoutes);
+app.use('/api/patient', patientRoutes);
+app.use('/api/doctor', doctorRoutes);
 
 const port = process.env.PORT || 8080;
 const server = app.listen(port, () => {
@@ -69,7 +66,7 @@ io.on('connection', (socket) => {
     // this will send message for only users opening that chat
     // socket.in(chat.id).emit('recieve-msg', message);
 
-    chat.users.forEach((user) => {
+    chat.users.forEach((user: any) => {
       if (user._id === message.sender._id) return;
 
       socket.in(user._id).emit('recieve-msg', message);
