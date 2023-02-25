@@ -11,6 +11,10 @@ const doc = {
       url: 'http://localhost:3000',
       description: 'local server',
     },
+    {
+      url: 'https://codoctor.onrender.com',
+      description: 'remote server',
+    },
   ],
   tags: [
     {

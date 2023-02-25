@@ -4,9 +4,9 @@ import 'express-async-errors';
 import helmet from 'helmet';
 import { Server } from 'socket.io';
 import path from 'path';
+import fs from 'fs';
 // swagger
 import swaggerUi from 'swagger-ui-express';
-import swaggerDoc from './swagger/swagger.json' assert { type: 'json' };
 
 // middlewares
 import errorHandler from './middlewares/error-handerl.js';
@@ -30,7 +30,13 @@ app.use('/api/doctor', doctorRoutes);
 
 // swagger routes
 app.use('/api-docs/swagger-json', (req, res) => res.json(swaggerDoc));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(
+    JSON.parse(fs.readFileSync(path.resolve('./swagger/swagger.json')))
+  )
+);
 
 app.use(errorHandler);
 
