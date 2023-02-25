@@ -9,3 +9,193 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Disease {
+  id            String         @id @default(uuid())
+  name          String
+  description   String?
+  patients      Patient[]
+  prescriptions Prescription[]
+}
+
+model Medicine {
+  id            String         @id @default(uuid())
+  name          String
+  patients      Patient[]
+  prescriptions Prescription[]
+}
+
+model Prescription {
+  id            String                @id @default(uuid())
+  dignose       String
+  requriedRays  String?
+  requiredTests String?
+  medicines     Medicine[]
+  diseases      Disease[]
+  consultation  OfflineConsultation[]
+}
+
+model Patient {
+  id                         String                @id @default(uuid())
+  firstName                  String
+  midName                    String?
+  lastName                   String
+  gender                     GENDER?
+  nationalId                 String?
+  bloodGroup                 String?
+  weight                     String?
+  height                     String?
+  age                        Int?
+  isBlocked                  Boolean               @default(false)
+  email                      String                @unique
+  password                   String
+  resetPasswordToken         DateTime?
+  resertPasswordTokenExpires DateTime?
+  doctorReviews              DoctorReview[]
+  PatientReports             PatientReports[]
+  previousDiseases           Disease[]
+  previousMedicines          Medicine[]
+  offlineConsultations       OfflineConsultation[]
+  onlineConsultations        OnlineConsultations[]
+}
+
+model DoctorReview {
+  id          String  @id @default(uuid())
+  rate        Int
+  title       String?
+  description String?
+  doctor      Doctor  @relation(fields: [doctorId], references: [id])
+  doctorId    String
+  Patient     Patient @relation(fields: [patientId], references: [id])
+  patientId   String
+}
+
+model PatientReports {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  doctor      Doctor   @relation(fields: [doctorId], references: [id])
+  patientId   String
+  doctorId    String
+}
+
+model Doctor {
+  id                         String                @id @default(uuid())
+  firstName                  String
+  midName                    String?
+  lastName                   String
+  gender                     GENDER
+  nationalId                 String?
+  email                      String                @unique
+  password                   String
+  isBlocked                  Boolean               @default(false)
+  isVeriyfied                Boolean               @default(false)
+  onlineExaminationPrice     Int?
+  resetPasswordToken         DateTime?
+  resertPasswordTokenExpires DateTime?
+  reviews                    DoctorReview[]
+  certificates               Certificate[]
+  clincs                     Clinc[]
+  onlineWorkAppointments     WorkAppointments[]
+  specialization             MedicalSpecialization @relation(fields: [medicalSpecializationId], references: [id])
+  medicalSpecializationId    String
+  patientReports             PatientReports[]
+  onlineConsultations        OnlineConsultations[]
+}
+
+model MedicalSpecialization {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  doctors     Doctor[]
+}
+
+model Clinc {
+  id                   String                @id @default(uuid())
+  name                 String
+  phone                String?
+  address              String?
+  reservationPrice     Int?
+  Doctor               Doctor                @relation(fields: [doctorId], references: [id])
+  doctorId             String
+  workAppointments     WorkAppointments[]
+  consultations OfflineConsultation[]
+}
+
+model WorkAppointments {
+  id       String  @id @default(uuid())
+  day      String
+  from     String
+  to       String
+  Clinc    Clinc?  @relation(fields: [clincId], references: [id])
+  clincId  String?
+  Doctor   Doctor? @relation(fields: [doctorId], references: [id])
+  doctorId String?
+}
+
+model Certificate {
+  id          String  @id @default(uuid())
+  destination String
+  imageUrl    String?
+  Doctor      Doctor  @relation(fields: [doctorId], references: [id])
+  doctorId    String
+}
+
+model OfflineConsultation {
+  id             String        @id @default(uuid())
+  appointment    DateTime
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  clinc          Clinc         @relation(fields: [clincId], references: [id])
+  clincId        String
+  patient        Patient       @relation(fields: [patientId], references: [id])
+  patientId      String
+  prescription   Prescription? @relation(fields: [prescriptionId], references: [id])
+  prescriptionId String?       @unique
+}
+
+model OnlineConsultations {
+  id          String   @id @default(uuid())
+  appointment DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  doctor      Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId    String
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  patientId   String
+  chat        Chat?
+}
+
+model Chat {
+  id                    String              @id @default(uuid())
+  name                  String?
+  messages              Message[]
+  consultation          OnlineConsultations @relation(fields: [onlineConsultationsId], references: [id])
+  onlineConsultationsId String              @unique
+}
+
+model Message {
+  id              String   @id @default(uuid())
+  content         String?
+  attachedFileUrl String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  Chat            Chat     @relation(fields: [chatId], references: [id])
+  chatId          String
+  senderId        String
+}
+
+model Admin {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+}
+
+enum GENDER {
+  MALE
+  FEMALE
+}

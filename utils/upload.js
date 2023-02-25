@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import multer from 'multer';
 
 const storage = multer.diskStorage({
@@ -10,7 +9,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = (req: Request, file: { mimetype: string }, cb: Function) => {
+const fileFilter = (req, file, cb) => {
   if (
     file.mimetype === 'image/png' ||
     file.mimetype === 'image/jpg' ||

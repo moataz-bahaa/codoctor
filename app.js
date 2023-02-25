@@ -1,23 +1,21 @@
 import 'dotenv/config';
 import express from 'express';
-import morgan from 'morgan';
 import 'express-async-errors';
 import helmet from 'helmet';
 import { Server } from 'socket.io';
 import path from 'path';
+// swagger
+import swaggerUi from 'swagger-ui-express';
+import swaggerDoc from './swagger/swagger.json' assert { type: 'json' };
 
 // middlewares
-
+import errorHandler from './middlewares/error-handerl.js';
 // routes
-import adminRoutes from './routes/admin';
-import doctorRoutes from './routes/doctor';
-import patientRoutes from './routes/patient';
+import adminRoutes from './routes/admin.js';
+import doctorRoutes from './routes/doctor.js';
+import patientRoutes from './routes/patient.js';
 
 const app = express();
-
-if (process.env.NODE_ENV !== 'production') {
-  app.use(morgan('dev'));
-}
 
 // middlewares
 app.use(express.json());
@@ -30,7 +28,13 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/patient', patientRoutes);
 app.use('/api/doctor', doctorRoutes);
 
-const port = process.env.PORT || 8080;
+// swagger routes
+app.use('/api-docs/swagger-json', (req, res) => res.json(swaggerDoc));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+
+app.use(errorHandler);
+
+const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
   console.log(`server is running on port: ${port}`);
 });
@@ -66,7 +70,7 @@ io.on('connection', (socket) => {
     // this will send message for only users opening that chat
     // socket.in(chat.id).emit('recieve-msg', message);
 
-    chat.users.forEach((user: any) => {
+    chat.users.forEach((user) => {
       if (user._id === message.sender._id) return;
 
       socket.in(user._id).emit('recieve-msg', message);
