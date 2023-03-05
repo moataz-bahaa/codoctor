@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -52,7 +53,7 @@ model Patient {
   resetPasswordToken         DateTime?
   resertPasswordTokenExpires DateTime?
   doctorReviews              DoctorReview[]
-  PatientReports             PatientReports[]
+  patientReports             PatientReports[]
   previousDiseases           Disease[]
   previousMedicines          Medicine[]
   offlineConsultations       OfflineConsultation[]
@@ -64,9 +65,9 @@ model DoctorReview {
   rate        Int
   title       String?
   description String?
-  doctor      Doctor  @relation(fields: [doctorId], references: [id])
+  doctor      Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   doctorId    String
-  Patient     Patient @relation(fields: [patientId], references: [id])
+  Patient     Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId   String
 }
 
@@ -76,8 +77,8 @@ model PatientReports {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  patient     Patient  @relation(fields: [patientId], references: [id])
-  doctor      Doctor   @relation(fields: [doctorId], references: [id])
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor      Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   patientId   String
   doctorId    String
 }
@@ -114,15 +115,15 @@ model MedicalSpecialization {
 }
 
 model Clinc {
-  id                   String                @id @default(uuid())
-  name                 String
-  phone                String?
-  address              String?
-  reservationPrice     Int?
-  Doctor               Doctor                @relation(fields: [doctorId], references: [id])
-  doctorId             String
-  workAppointments     WorkAppointments[]
-  consultations OfflineConsultation[]
+  id               String                @id @default(uuid())
+  name             String
+  phone            String?
+  address          String?
+  reservationPrice Int?
+  doctor           Doctor                @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  doctorId         String
+  workAppointments WorkAppointments[]
+  consultations    OfflineConsultation[]
 }
 
 model WorkAppointments {
@@ -130,9 +131,9 @@ model WorkAppointments {
   day      String
   from     String
   to       String
-  Clinc    Clinc?  @relation(fields: [clincId], references: [id])
+  clinc    Clinc?  @relation(fields: [clincId], references: [id])
   clincId  String?
-  Doctor   Doctor? @relation(fields: [doctorId], references: [id])
+  doctor   Doctor? @relation(fields: [doctorId], references: [id])
   doctorId String?
 }
 
@@ -140,7 +141,7 @@ model Certificate {
   id          String  @id @default(uuid())
   destination String
   imageUrl    String?
-  Doctor      Doctor  @relation(fields: [doctorId], references: [id])
+  doctor      Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   doctorId    String
 }
 
@@ -149,9 +150,9 @@ model OfflineConsultation {
   appointment    DateTime
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-  clinc          Clinc         @relation(fields: [clincId], references: [id])
+  clinc          Clinc         @relation(fields: [clincId], references: [id], onDelete: Cascade)
   clincId        String
-  patient        Patient       @relation(fields: [patientId], references: [id])
+  patient        Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId      String
   prescription   Prescription? @relation(fields: [prescriptionId], references: [id])
   prescriptionId String?       @unique
@@ -162,9 +163,9 @@ model OnlineConsultations {
   appointment DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  doctor      Doctor   @relation(fields: [doctorId], references: [id])
+  doctor      Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   doctorId    String
-  patient     Patient  @relation(fields: [patientId], references: [id])
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId   String
   chat        Chat?
 }
@@ -173,7 +174,7 @@ model Chat {
   id                    String              @id @default(uuid())
   name                  String?
   messages              Message[]
-  consultation          OnlineConsultations @relation(fields: [onlineConsultationsId], references: [id])
+  consultation          OnlineConsultations @relation(fields: [onlineConsultationsId], references: [id], onDelete: Cascade)
   onlineConsultationsId String              @unique
 }
 
@@ -183,7 +184,7 @@ model Message {
   attachedFileUrl String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  Chat            Chat     @relation(fields: [chatId], references: [id])
+  Chat            Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId          String
   senderId        String
 }
@@ -198,4 +199,11 @@ model Admin {
 enum GENDER {
   MALE
   FEMALE
+}
+
+view User {
+  id       String @unique
+  email    String @unique
+  password String
+  role     String
 }

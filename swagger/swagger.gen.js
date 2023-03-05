@@ -28,6 +28,13 @@ const doc = {
     },
   ],
   definitions: {},
+  securityDefinitions: {
+    bearerAuth: {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    },
+  },
 };
 
 const outputFile = './swagger/swagger.json';

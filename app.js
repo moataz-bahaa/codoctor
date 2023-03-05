@@ -14,6 +14,7 @@ import errorHandler from './middlewares/error-handerl.js';
 import adminRoutes from './routes/admin.js';
 import doctorRoutes from './routes/doctor.js';
 import patientRoutes from './routes/patient.js';
+import userRoutes from './routes/user.js';
 
 const app = express();
 
@@ -24,17 +25,20 @@ app.use(helmet()); // adds some http headers for security
 app.use(express.static(path.resolve('data')));
 
 // routes
+app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/patient', patientRoutes);
 app.use('/api/doctor', doctorRoutes);
+app.use('/api/patient', patientRoutes);
 
 // swagger routes
-app.use('/api-docs/swagger-json', (req, res) => res.json(swaggerDoc));
+app.use('/api-docs/swagger-json', (req, res) =>
+  res.json(JSON.parse(fs.readFileSync(path.resolve('swagger', 'swagger.json'))))
+);
 app.use(
   '/api-docs',
   swaggerUi.serve,
   swaggerUi.setup(
-    JSON.parse(fs.readFileSync(path.resolve('./swagger/swagger.json')))
+    JSON.parse(fs.readFileSync(path.resolve('swagger', 'swagger.json')))
   )
 );
 
@@ -46,7 +50,7 @@ const server = app.listen(port, () => {
 });
 
 // ************************
-// socket
+// socketx
 // ************************
 const io = new Server(server, {
   cors: {

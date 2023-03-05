@@ -3,7 +3,7 @@ import prisma from '../prisma/client.js';
 import { BadRequestError, NotFoundError } from '../utils/errors.js';
 import jwt from 'jsonwebtoken';
 
-export const signin = async (req, res, next) => {
+export const login = async (req, res, next) => {
   // #swagger.tags = ['Admin']
   /*#swagger.requestBody = {
       required: true,
@@ -47,3 +47,25 @@ export const signin = async (req, res, next) => {
 
   res.status(StatusCodes.OK).json({ admin, token });
 };
+
+export const verifyDoctor = async (req, res, next) => {
+  
+};
+
+export const blockDoctor = async (req, res, next) => {
+  
+};
+
+export const deleteDocotr = async (req, res, next) => {
+  
+};
+
+export const blockPatient = async (req, res, next) => {
+  
+};
+
+export const deletePatient = async (req, res, next) => {
+  
+};
+
+// reviews

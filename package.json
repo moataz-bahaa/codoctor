@@ -6,8 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "dev:start": "nodemon ./swagger/swagger.gen.js",
-    "swagger-autogen": "node ./swagger/swagger.gen.js"
+    "dev": "nodemon ./swagger/swagger.gen.js",
+    "swagger-autogen": "node ./swagger/swagger.gen.js",
+    "prisma:seed": "node ./prisma/seed.js"
   },
   "author": "moataz",
   "license": "ISC",
