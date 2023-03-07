@@ -5,7 +5,6 @@ import helmet from 'helmet';
 import { Server } from 'socket.io';
 import path from 'path';
 import fs from 'fs';
-import cors from 'cors';
 // swagger
 import swaggerUi from 'swagger-ui-express';
 
@@ -20,11 +19,6 @@ import userRoutes from './routes/user.js';
 const app = express();
 
 // middlewares
-app.use(
-  cors({
-    origin: '*',
-  })
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet()); // adds some http headers for security

@@ -372,9 +372,9 @@ export const searchByNameOrSpecialization = async (req, res, next) => {
       lastName,
       m.title as medicalSpecialization,
       avg(r.rate) as rate
-    from doctor as d
-    left join doctorreview as r on r.doctorId = d.id
-    join medicalspecialization as m on m.id = d.medicalSpecializationId
+    from Doctor as d
+    left join DoctorReview as r on r.doctorId = d.id
+    join MedicalSpecialization as m on m.id = d.medicalSpecializationId
     where 
       d.firstName like '%${search}%' or
       d.midName like '%${search}%' or
@@ -426,6 +426,10 @@ export const getDoctorProfile = async (req, res, next) => {
       },
     },
   });
+  
+  if (!doctor) {
+    throw new NotFoundError('doctor not found');
+  }
 
   delete doctor.password;
   res.status(StatusCodes.OK).json({
