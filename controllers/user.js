@@ -2,7 +2,6 @@ import prisma from '../prisma/client.js';
 import { BadRequestError, NotFoundError } from '../utils/errors.js';
 import jwt from 'jsonwebtoken';
 import { StatusCodes } from 'http-status-codes';
-import { ITEMS_PER_PAGE } from '../utils/constants.js';
 
 export const login = async (req, res, next) => {
   // #swagger.tags = ['User']
