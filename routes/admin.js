@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { login } from '../controllers/admin.js';
+import { postVerifyDoctor } from '../controllers/admin.js';
+import { isAdmin } from '../middlewares/auth.js';
 
 const router = Router();
 
-router.post('/auth/login', login);
+router.post('/doctor/veryfiy', isAdmin, postVerifyDoctor)
 
 export default router;

@@ -27,11 +27,11 @@ app.use(express.static(path.resolve('data')));
 // routes
 app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/doctor', doctorRoutes);
-app.use('/api/patient', patientRoutes);
+app.use('/api/doctors', doctorRoutes);
+app.use('/api/patients', patientRoutes);
 
 // swagger routes
-app.use('/api-docs/swagger-json', (req, res) =>
+app.use('/api-docs/json', (req, res) =>
   res.json(JSON.parse(fs.readFileSync(path.resolve('swagger', 'swagger.json'))))
 );
 app.use(

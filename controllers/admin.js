@@ -3,18 +3,20 @@ import prisma from '../prisma/client.js';
 import { BadRequestError, NotFoundError } from '../utils/errors.js';
 import jwt from 'jsonwebtoken';
 
-export const login = async (req, res, next) => {
+export const postVerifyDoctor = async (req, res, next) => {
   // #swagger.tags = ['Admin']
+  /*#swagger.security = [{
+      "bearerAuth": []
+    }]
+  */
   /*#swagger.requestBody = {
       required: true,
       '@content': {
         'application/json': {
           schema: {
             type: 'object',
-              properties: {
-                email: { type: 'string'},
-                password: { type: 'string'}
-              }
+            properties: {
+              doctorId: { type: 'string'},
             }
           }
         }
@@ -22,50 +24,34 @@ export const login = async (req, res, next) => {
     }
   */
 
-  const { email, password } = req.body;
-  if (!email || !password) {
-    throw new BadRequestError('please provide email, password');
+  const { doctorId } = req.body;
+  if (!doctorId) {
+    throw new BadRequestError('Please provide doctor id');
   }
 
-  const admin = await prisma.admin.findFirst({
-    where: {
-      email,
-      password,
-    },
-    select: {
-      id: true,
-      email: true,
-      name: true,
+  let doctor = await prisma.doctor.findUnique({ where: { id: doctorId } });
+  if (!doctor) {
+    throw new NotFoundError('doctor not found');
+  }
+
+  const newDoctor = await prisma.doctor.update({
+    where: { id: doctor.id },
+    data: {
+      isVeriyfied: true,
     },
   });
 
-  if (!admin) {
-    throw new NotFoundError('no admin with this email and password');
-  }
-
-  const token = jwt.sign(admin, process.env.JWT_SECRET);
-
-  res.status(StatusCodes.OK).json({ admin, token });
+  res.status(StatusCodes.OK).json({
+    statusCode: StatusCodes.OK,
+    message: 'doctor veryfied successfully',
+    doctor: newDoctor,
+  });
 };
 
-export const verifyDoctor = async (req, res, next) => {
-  
-};
+export const postBlockDoctor = async (req, res, next) => {};
 
-export const blockDoctor = async (req, res, next) => {
-  
-};
+export const deleteDoctor = async (req, res, next) => {};
 
-export const deleteDocotr = async (req, res, next) => {
-  
-};
+export const postBlockPatient = async (req, res, next) => {};
 
-export const blockPatient = async (req, res, next) => {
-  
-};
-
-export const deletePatient = async (req, res, next) => {
-  
-};
-
-// reviews
+export const deletePatient = async (req, res, next) => {};

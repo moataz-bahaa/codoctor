@@ -12,16 +12,15 @@ export const postSignup = async (req, res, next) => {
         'application/json': {
           schema: {
             type: 'object',
-              properties: {
-                email: { type: 'string'},
-                password: { type: 'string'},
-                firstName: { type: 'string'},
-                midName: { type: 'string'},
-                lastName: { type: 'string'},
-                gender: { type: 'string'},
-                nationalId: { type: 'string'},
-                specializationId: { type: 'string'},
-              }
+            properties: {
+              email: { type: 'string'},
+              password: { type: 'string'},
+              firstName: { type: 'string'},
+              midName: { type: 'string'},
+              lastName: { type: 'string'},
+              gender: { type: 'string'},
+              nationalId: { type: 'string'},
+              specializationId: { type: 'string'},
             }
           }
         }
@@ -101,15 +100,19 @@ export const postSignup = async (req, res, next) => {
 
 export const getClincs = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
-  /*#swagger.security = [{
-      "bearerAuth": []
-    }]
-  */
+  // #swagger.description = 'Get clincs of a specific doctor'
+
+  const { id } = req.params;
+
+  const doctor = await prisma.doctor.findUnique({ where: { id } });
+  if (!doctor) {
+    throw new NotFoundError('doctor not found');
+  }
 
   const clincs = await prisma.clinc.findMany({
     where: {
       doctor: {
-        id: req.doctor.id,
+        id: doctor.id,
       },
     },
     select: {
@@ -348,3 +351,154 @@ export const getOnlineConsultation = async (req, res, next) => {
     consultations,
   });
 };
+
+export const searchByNameOrSpecialization = async (req, res, next) => {
+  // #swagger.tags = ['Doctor']
+  // #swagger.description = 'search for doctors by name or by specializtion'
+
+  let { search, page } = req.query;
+  if (!page) page = 1;
+  page = +page;
+
+  if (!search) search = '';
+
+  const numberOfDoctors = await prisma.doctor.count();
+
+  const doctors = await prisma.$queryRawUnsafe(`
+    select
+      d.id as id,
+      firstName,
+      midName,
+      lastName,
+      m.title as medicalSpecialization,
+      avg(r.rate) as rate
+    from doctor as d
+    left join doctorreview as r on r.doctorId = d.id
+    join medicalspecialization as m on m.id = d.medicalSpecializationId
+    where 
+      d.firstName like '%${search}%' or
+      d.midName like '%${search}%' or
+      d.lastName like '%${search}%' or
+      m.title like '%${search}%'
+    group by d.id
+    limit ${ITEMS_PER_PAGE} offset ${(page - 1) * ITEMS_PER_PAGE}
+  `);
+
+  res.status(StatusCodes.OK).json({
+    statusCode: StatusCodes.OK,
+    numberOfItems: numberOfDoctors,
+    numberOfPages: Math.ceil(numberOfDoctors / ITEMS_PER_PAGE),
+    doctors,
+  });
+};
+
+export const getDoctorProfile = async (req, res, next) => {
+  // #swagger.tags = ['Doctor']
+  // #swagger.description = 'Get doctor profile'
+  const { id } = req.params;
+  const doctor = await prisma.doctor.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      midName: true,
+      lastName: true,
+      onlineExaminationPrice: true,
+      specialization: true,
+      onlineWorkAppointments: true,
+      clincs: {
+        select: {
+          id: true,
+          name: true,
+          phone: true,
+          address: true,
+        },
+      },
+      reviews: {
+        select: { id: true, title: true, rate: true, description: true },
+      },
+      _count: {
+        select: {
+          onlineConsultations: true,
+          certificates: true,
+        },
+      },
+    },
+  });
+
+  delete doctor.password;
+  res.status(StatusCodes.OK).json({
+    statusCode: StatusCodes.OK,
+    doctor,
+  });
+};
+
+export const getReviews = async (req, res, next) => {
+  // #swagger.tags = ['Doctor']
+  // #swagger.description = 'Get doctor reviews'
+
+  const { id } = req.params;
+
+  const doctor = await prisma.doctor.findUnique({ where: { id } });
+  if (!doctor) {
+    throw new NotFoundError('no doctor with the attched id');
+  }
+
+  const reviews = await prisma.doctorReview.findMany({
+    where: {
+      doctorId: doctor.id,
+    },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      rate: true,
+      patient: {
+        select: {
+          id: true,
+          firstName: true,
+          midName: true,
+          lastName: true,
+          gender: true,
+        },
+      },
+    },
+  });
+
+  res.status(StatusCodes.OK).json({
+    statusCode: StatusCodes.OK,
+    reviews,
+  });
+};
+
+// TODO
+export const getCertificates = async (req, res, next) => {
+  // #swagger.tags = ['Doctor']
+  
+  const { id } = req.params;
+
+  const doctor = await prisma.doctor.findUnique({ where: { id }});
+  if (!doctor) {
+    throw new NotFoundError('doctor not found');
+  }
+  
+  const certificates = await prisma.certificate.findMany({
+    where: { doctorId: id },
+  });
+
+  res.status(StatusCodes.OK).json({
+    statusCode: StatusCodes.OK,
+    certificates,
+  });
+};
+
+export const postCertificate = async (req, res, next) => {};
+
+export const patchCertificate = async (req, res, next) => {};
+
+export const deleteCertificate = async (req, res, next) => {};
+
+export const postBookOnlineConsulations = async (req, res, next) => {};
+
+export const postBookOfflineConsultations = async (req, res, next) => {};

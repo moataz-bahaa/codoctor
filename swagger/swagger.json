@@ -55,7 +55,7 @@
         }
       }
     },
-    "/api/admin/auth/login": {
+    "/api/admin/doctor/veryfiy": {
       "post": {
         "tags": [
           "Admin"
@@ -63,6 +63,11 @@
         "description": "",
         "parameters": [],
         "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -70,10 +75,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
+                  "doctorId": {
                     "type": "string"
                   }
                 }
@@ -83,20 +85,7 @@
         }
       }
     },
-    "/api/doctor/clincs": {
-      "get": {
-        "tags": [
-          "Doctor"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {},
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      },
+    "/api/doctors/clincs": {
       "post": {
         "tags": [
           "Doctor"
@@ -173,7 +162,108 @@
         }
       }
     },
-    "/api/doctor/auth/signup": {
+    "/api/doctors/": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "search for doctors by name or by specializtion",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/doctors/{id}": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "Get doctor profile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/doctors/{id}/clincs": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "Get clincs of a specific doctor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/doctors/{id}/reviews": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "Get doctor reviews",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/doctors/{id}/certificates": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/doctors/auth/signup": {
       "post": {
         "tags": [
           "Doctor"
@@ -219,7 +309,7 @@
         }
       }
     },
-    "/api/doctor/clincs/{id}": {
+    "/api/doctors/clincs/{id}": {
       "get": {
         "tags": [
           "Doctor"
@@ -238,7 +328,7 @@
         "responses": {}
       }
     },
-    "/api/doctor/offline-consultations": {
+    "/api/doctors/offline-consultations": {
       "get": {
         "tags": [
           "Doctor"
@@ -261,7 +351,7 @@
         ]
       }
     },
-    "/api/doctor/online-consultations": {
+    "/api/doctors/online-consultations": {
       "get": {
         "tags": [
           "Doctor"

@@ -233,22 +233,22 @@ CREATE TABLE `_MedicineToPrescription` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `DoctorReview` ADD CONSTRAINT `DoctorReview_doctorId_fkey` FOREIGN KEY (`doctorId`) REFERENCES `Doctor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `DoctorReview` ADD CONSTRAINT `DoctorReview_doctorId_fkey` FOREIGN KEY (`doctorId`) REFERENCES `Doctor`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `DoctorReview` ADD CONSTRAINT `DoctorReview_patientId_fkey` FOREIGN KEY (`patientId`) REFERENCES `Patient`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `DoctorReview` ADD CONSTRAINT `DoctorReview_patientId_fkey` FOREIGN KEY (`patientId`) REFERENCES `Patient`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `PatientReports` ADD CONSTRAINT `PatientReports_patientId_fkey` FOREIGN KEY (`patientId`) REFERENCES `Patient`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `PatientReports` ADD CONSTRAINT `PatientReports_patientId_fkey` FOREIGN KEY (`patientId`) REFERENCES `Patient`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `PatientReports` ADD CONSTRAINT `PatientReports_doctorId_fkey` FOREIGN KEY (`doctorId`) REFERENCES `Doctor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `PatientReports` ADD CONSTRAINT `PatientReports_doctorId_fkey` FOREIGN KEY (`doctorId`) REFERENCES `Doctor`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Doctor` ADD CONSTRAINT `Doctor_medicalSpecializationId_fkey` FOREIGN KEY (`medicalSpecializationId`) REFERENCES `MedicalSpecialization`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Clinc` ADD CONSTRAINT `Clinc_doctorId_fkey` FOREIGN KEY (`doctorId`) REFERENCES `Doctor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Clinc` ADD CONSTRAINT `Clinc_doctorId_fkey` FOREIGN KEY (`doctorId`) REFERENCES `Doctor`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `WorkAppointments` ADD CONSTRAINT `WorkAppointments_clincId_fkey` FOREIGN KEY (`clincId`) REFERENCES `Clinc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -257,28 +257,28 @@ ALTER TABLE `WorkAppointments` ADD CONSTRAINT `WorkAppointments_clincId_fkey` FO
 ALTER TABLE `WorkAppointments` ADD CONSTRAINT `WorkAppointments_doctorId_fkey` FOREIGN KEY (`doctorId`) REFERENCES `Doctor`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Certificate` ADD CONSTRAINT `Certificate_doctorId_fkey` FOREIGN KEY (`doctorId`) REFERENCES `Doctor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Certificate` ADD CONSTRAINT `Certificate_doctorId_fkey` FOREIGN KEY (`doctorId`) REFERENCES `Doctor`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `OfflineConsultation` ADD CONSTRAINT `OfflineConsultation_clincId_fkey` FOREIGN KEY (`clincId`) REFERENCES `Clinc`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `OfflineConsultation` ADD CONSTRAINT `OfflineConsultation_clincId_fkey` FOREIGN KEY (`clincId`) REFERENCES `Clinc`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `OfflineConsultation` ADD CONSTRAINT `OfflineConsultation_patientId_fkey` FOREIGN KEY (`patientId`) REFERENCES `Patient`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `OfflineConsultation` ADD CONSTRAINT `OfflineConsultation_patientId_fkey` FOREIGN KEY (`patientId`) REFERENCES `Patient`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `OfflineConsultation` ADD CONSTRAINT `OfflineConsultation_prescriptionId_fkey` FOREIGN KEY (`prescriptionId`) REFERENCES `Prescription`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `OnlineConsultations` ADD CONSTRAINT `OnlineConsultations_doctorId_fkey` FOREIGN KEY (`doctorId`) REFERENCES `Doctor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `OnlineConsultations` ADD CONSTRAINT `OnlineConsultations_doctorId_fkey` FOREIGN KEY (`doctorId`) REFERENCES `Doctor`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `OnlineConsultations` ADD CONSTRAINT `OnlineConsultations_patientId_fkey` FOREIGN KEY (`patientId`) REFERENCES `Patient`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `OnlineConsultations` ADD CONSTRAINT `OnlineConsultations_patientId_fkey` FOREIGN KEY (`patientId`) REFERENCES `Patient`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Chat` ADD CONSTRAINT `Chat_onlineConsultationsId_fkey` FOREIGN KEY (`onlineConsultationsId`) REFERENCES `OnlineConsultations`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Chat` ADD CONSTRAINT `Chat_onlineConsultationsId_fkey` FOREIGN KEY (`onlineConsultationsId`) REFERENCES `OnlineConsultations`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Message` ADD CONSTRAINT `Message_chatId_fkey` FOREIGN KEY (`chatId`) REFERENCES `Chat`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Message` ADD CONSTRAINT `Message_chatId_fkey` FOREIGN KEY (`chatId`) REFERENCES `Chat`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_DiseaseToPatient` ADD CONSTRAINT `_DiseaseToPatient_A_fkey` FOREIGN KEY (`A`) REFERENCES `Disease`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

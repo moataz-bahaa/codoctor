@@ -67,7 +67,7 @@ model DoctorReview {
   description String?
   doctor      Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   doctorId    String
-  Patient     Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patient     Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId   String
 }
 
@@ -184,7 +184,7 @@ model Message {
   attachedFileUrl String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  Chat            Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chat            Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId          String
   senderId        String
 }
@@ -205,5 +205,6 @@ view User {
   id       String @unique
   email    String @unique
   password String
+  name     String
   role     String
 }
