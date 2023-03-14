@@ -1,8 +1,10 @@
 import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'data/files');
+    cb(null, 'files/');
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
@@ -23,4 +25,14 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-module.exports = upload;
+export const clearFile = (url) => {
+  const filePath = path.resolve(url);
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.log(err);
+      // throw err;
+    }
+  });
+};
+
+export default upload;

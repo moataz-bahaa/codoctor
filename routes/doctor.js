@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  deleteCertificate,
   deleteClinc,
   getCertificates,
   getClinc,
@@ -8,11 +9,14 @@ import {
   getOfflineConsulations,
   getOnlineConsultation,
   getReviews,
+  patchCertificate,
+  postCertificate,
   postClinc,
   postSignup,
   searchByNameOrSpecialization,
 } from '../controllers/doctor.js';
-import { isAdminOrDoctor } from '../middlewares/auth.js';
+import { isAdminOrDoctor, isDoctor } from '../middlewares/auth.js';
+import upload from '../utils/upload.js'
 
 const router = Router();
 
@@ -30,6 +34,12 @@ router.get('/:id/clincs', getClincs);
 router.get('/:id/reviews', getReviews);
 
 router.get('/:id/certificates', getCertificates);
+
+router.post('/certificate', isDoctor, upload.single('image'), postCertificate)
+
+router.patch('/certificate/:id', isDoctor, upload.single('image'), patchCertificate)
+
+router.delete('/certificate', isDoctor, deleteCertificate)
 
 router.post('/auth/signup', postSignup);
 

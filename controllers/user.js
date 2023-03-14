@@ -2,6 +2,7 @@ import prisma from '../prisma/client.js';
 import { BadRequestError, NotFoundError } from '../utils/errors.js';
 import jwt from 'jsonwebtoken';
 import { StatusCodes } from 'http-status-codes';
+import { comparePassword } from '../utils/bcrypt.js';
 
 export const login = async (req, res, next) => {
   // #swagger.tags = ['User']
@@ -28,13 +29,19 @@ export const login = async (req, res, next) => {
   const user = await prisma.user.findFirst({
     where: {
       email,
-      password,
     },
   });
 
   if (!user) {
     throw new NotFoundError('no user with this email and password');
   }
+
+  const isMatch = await comparePassword(password, user.password);
+
+  if (!isMatch) {
+    throw new NotFoundError(`password doesn't match`);
+  }
+
 
   const token = jwt.sign(
     { id: user.id, email: user.email },

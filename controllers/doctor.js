@@ -1,8 +1,14 @@
 import prisma from '../prisma/client.js';
-import { BadRequestError, NotFoundError } from '../utils/errors.js';
+import {
+  BadRequestError,
+  NotFoundError,
+  UnAuthenticatedError,
+} from '../utils/errors.js';
 import jwt from 'jsonwebtoken';
 import { StatusCodes } from 'http-status-codes';
 import { ITEMS_PER_PAGE } from '../utils/constants.js';
+import { hash } from '../utils/bcrypt.js';
+import { clearFile } from '../utils/upload.js';
 
 export const postSignup = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
@@ -51,8 +57,8 @@ export const postSignup = async (req, res, next) => {
     throw new BadRequestError('please provide all data');
   }
 
-  const isEmailExsists = await prisma.doctor.findFirst({ where: { email } });
-  if (isEmailExsists) {
+  const isUserExist = await prisma.user.findFirst({ where: { email } });
+  if (isUserExist) {
     throw new BadRequestError('this email already exists');
   }
 
@@ -64,10 +70,12 @@ export const postSignup = async (req, res, next) => {
     throw new NotFoundError('specialization not fount');
   }
 
+  const hashedPassword = await hash(password);
+
   const doctor = await prisma.doctor.create({
     data: {
       email,
-      password,
+      password: hashedPassword,
       firstName,
       midName,
       lastName,
@@ -426,7 +434,7 @@ export const getDoctorProfile = async (req, res, next) => {
       },
     },
   });
-  
+
   if (!doctor) {
     throw new NotFoundError('doctor not found');
   }
@@ -476,19 +484,18 @@ export const getReviews = async (req, res, next) => {
   });
 };
 
-// TODO
 export const getCertificates = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
-  
+
   const { id } = req.params;
 
-  const doctor = await prisma.doctor.findUnique({ where: { id }});
+  const doctor = await prisma.doctor.findUnique({ where: { id } });
   if (!doctor) {
     throw new NotFoundError('doctor not found');
   }
-  
+
   const certificates = await prisma.certificate.findMany({
-    where: { doctorId: id },
+    where: { doctorId: doctor.id },
   });
 
   res.status(StatusCodes.OK).json({
@@ -497,12 +504,153 @@ export const getCertificates = async (req, res, next) => {
   });
 };
 
-export const postCertificate = async (req, res, next) => {};
+export const postCertificate = async (req, res, next) => {
+  // #swagger.tags = ['Doctor']
+  /*#swagger.requestBody = {
+      required: true,
+      '@content': {
+        'multipart/form-data': {
+          schema: {
+            type: 'object',
+            properties: {
+              destination: { type: 'string'},
+              image: { type: 'file' }
+            }
+          }
+        }
+      }
+    }
+  */
+  /*#swagger.security = [{
+      "bearerAuth": []
+    }]
+  */
 
-export const patchCertificate = async (req, res, next) => {};
+  const { destination } = req.body;
+  const image = req.file;
+  if (!destination || !image) {
+    throw new BadRequestError('please provide all data');
+  }
 
-export const deleteCertificate = async (req, res, next) => {};
+  const imageUrl = image.path.replace('\\', '/');
 
-export const postBookOnlineConsulations = async (req, res, next) => {};
+  const certificate = await prisma.certificate.create({
+    data: {
+      destination,
+      imageUrl,
+      doctor: {
+        connect: {
+          id: req.doctor.id,
+        },
+      },
+    },
+  });
 
-export const postBookOfflineConsultations = async (req, res, next) => {};
+  res.status(StatusCodes.OK).json({
+    statusCode: StatusCodes.OK,
+    message: 'Certificate created successfully',
+    certificate,
+  });
+};
+
+export const patchCertificate = async (req, res, next) => {
+  // #swagger.tags = ['Doctor']
+  /*#swagger.requestBody = {
+      required: true,
+      '@content': {
+        'multipart/form-data': {
+          schema: {
+            type: 'object',
+            properties: {
+              destination: { type: 'string' },
+              image: { type: 'file' }
+            }
+          }
+        }
+      }
+    }
+  */
+  /*#swagger.security = [{
+      "bearerAuth": []
+    }]
+  */
+
+  const { destination } = req.body;
+  const { id } = req.params;
+  const image = req.file;
+  let imageUrl = '';
+  if (image) {
+    imageUrl = image.path.replace('\\', '/');
+  }
+
+  const certificate = await prisma.certificate.findUnique({ where: { id } });
+  if (!certificate) {
+    throw new NotFoundError('certificate not found');
+  }
+
+  if (imageUrl) {
+    clearFile(certificate.imageUrl);
+  }
+
+  const newCertificate = await prisma.certificate.update({
+    where: { id },
+    data: {
+      destination: destination ?? certificate.destination,
+      imageUrl: imageUrl || certificate.imageUrl,
+    },
+  });
+
+  res.status(StatusCodes.OK).json({
+    statusCode: StatusCodes.OK,
+    message: 'certificate updated successfully',
+    certificate: newCertificate,
+  });
+};
+
+export const deleteCertificate = async (req, res, next) => {
+  // #swagger.tags = ['Doctor']
+  /*#swagger.requestBody = {
+      required: true,
+      '@content': {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              id: { type: 'string'},
+            }
+          }
+        }
+      }
+    }
+  */
+  /*#swagger.security = [{
+      "bearerAuth": []
+    }]
+  */
+
+  const { id } = req.body;
+  if (!id) {
+    throw new BadRequestError('Please Provide an id');
+  }
+  const certificate = await prisma.certificate.findUnique({ where: { id } });
+  if (!certificate) {
+    throw new NotFoundError('certificate not found');
+  }
+  if (certificate.doctorId !== req.doctor.id) {
+    throw new UnAuthenticatedError(
+      `you don't have permissions to delete this certificate`
+    );
+  }
+
+  try {
+    clearFile(certificate.imageUrl);
+  } catch (err) {
+    console.log('no file exists');
+  }
+  await prisma.certificate.delete({ where: { id } });
+
+  res.status(StatusCodes.OK).json({
+    statusCode: StatusCodes.OK,
+    message: 'Certificate deleted successfully',
+  });
+};

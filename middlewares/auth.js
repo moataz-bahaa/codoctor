@@ -46,6 +46,20 @@ export const isAdminOrDoctor = async (req, res, next) => {
   }
 };
 
+export const isDoctor = async (req, res, next) => {
+  try {
+    const user = await getUser(req.headers?.authorization);
+    if (user.role !== 'doctor') {
+      throw new UnAuthenticatedError('access denied');
+    }
+    delete user.password;
+    req.doctor = user;
+    next();
+  } catch (err) {
+    throw new UnAuthenticatedError(`you don't have perimissions`);
+  }
+};
+
 export const isPatient = async (req, res, next) => {
   try {
     const user = await getUser(req.headers?.authorization);
@@ -53,7 +67,7 @@ export const isPatient = async (req, res, next) => {
       throw new UnAuthenticatedError('access denied');
     }
     delete user.password;
-    req.admin = user;
+    req.patient = user;
     next();
   } catch (err) {
     throw new UnAuthenticatedError(`you don't have perimissions`);

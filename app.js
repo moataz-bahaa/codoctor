@@ -19,6 +19,7 @@ import userRoutes from './routes/user.js';
 const app = express();
 
 // middlewares
+app.use('/files', express.static(path.resolve('files')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet()); // adds some http headers for security
