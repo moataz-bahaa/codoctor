@@ -85,6 +85,101 @@
         }
       }
     },
+    "/api/doctors/": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "search for doctors by name or by specializtion",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/doctors/specializations": {
+      "get": {
+        "tags": [
+          "Specialization"
+        ],
+        "description": "get all specializations",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/doctors/clincs/{id}": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/doctors/{id}/clincs": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "Get clincs of a specific doctor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/api/doctors/clincs": {
       "post": {
         "tags": [
@@ -132,59 +227,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Doctor"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {},
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "clincId": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/doctors/": {
-      "get": {
-        "tags": [
-          "Doctor"
-        ],
-        "description": "search for doctors by name or by specializtion",
-        "parameters": [
-          {
-            "name": "search",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {}
       }
     },
     "/api/doctors/{id}": {
@@ -193,25 +235,6 @@
           "Doctor"
         ],
         "description": "Get doctor profile",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {}
-      }
-    },
-    "/api/doctors/{id}/clincs": {
-      "get": {
-        "tags": [
-          "Doctor"
-        ],
-        "description": "Get clincs of a specific doctor",
         "parameters": [
           {
             "name": "id",
@@ -268,7 +291,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "",
+        "description": "get all specializations",
         "parameters": [],
         "responses": {},
         "security": [
@@ -279,40 +302,15 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
+                  "destination": {
                     "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Doctor"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {},
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
+                  },
+                  "image": {
+                    "type": "file"
                   }
                 }
               }
@@ -326,7 +324,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "",
+        "description": "get all specializations",
         "parameters": [
           {
             "name": "id",
@@ -346,18 +344,43 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
+                  "destination": {
                     "type": "string"
+                  },
+                  "image": {
+                    "type": "file"
                   }
                 }
               }
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/doctors/auth/signup": {
@@ -406,25 +429,6 @@
         }
       }
     },
-    "/api/doctors/clincs/{id}": {
-      "get": {
-        "tags": [
-          "Doctor"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {}
-      }
-    },
     "/api/doctors/offline-consultations": {
       "get": {
         "tags": [
@@ -469,6 +473,13 @@
             "bearerAuth": []
           }
         ]
+      }
+    },
+    "/api/doctors/{{where{id:id}": {
+      "delete": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
       }
     }
   },

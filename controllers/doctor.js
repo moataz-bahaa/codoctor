@@ -245,29 +245,15 @@ export const getClinc = async (req, res, next) => {
 
 export const deleteClinc = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
-  /*#swagger.requestBody = {
-      required: true,
-      '@content': {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              clincId: { type: 'string'},
-            }
-          }
-        }
-      }
-    }
-  */
   /*#swagger.security = [{
       "bearerAuth": []
     }]
   */
 
-  const { clincId } = req.body;
+  const { id } = req.params;
   const clinc = await prisma.clinc.findFirst({
     where: {
-      id: clincId,
+      id: id,
     },
   });
 
@@ -283,7 +269,7 @@ export const deleteClinc = async (req, res, next) => {
 
   await prisma.clinc.delete({
     where: {
-      id: clincId,
+      id: id,
     },
   });
 
@@ -525,7 +511,6 @@ export const postCertificate = async (req, res, next) => {
       "bearerAuth": []
     }]
   */
-
   const { destination } = req.body;
   const image = req.file;
   if (!destination || !image) {
@@ -562,7 +547,7 @@ export const patchCertificate = async (req, res, next) => {
           schema: {
             type: 'object',
             properties: {
-              destination: { type: 'string' },
+              destination: { type: 'string'},
               image: { type: 'file' }
             }
           }
@@ -574,7 +559,6 @@ export const patchCertificate = async (req, res, next) => {
       "bearerAuth": []
     }]
   */
-
   const { destination } = req.body;
   const { id } = req.params;
   const image = req.file;
@@ -609,26 +593,11 @@ export const patchCertificate = async (req, res, next) => {
 
 export const deleteCertificate = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
-  /*#swagger.requestBody = {
-      required: true,
-      '@content': {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              id: { type: 'string'},
-            }
-          }
-        }
-      }
-    }
-  */
   /*#swagger.security = [{
       "bearerAuth": []
     }]
   */
-
-  const { id } = req.body;
+  const { id } = req.params;
   if (!id) {
     throw new BadRequestError('Please Provide an id');
   }
@@ -652,5 +621,22 @@ export const deleteCertificate = async (req, res, next) => {
   res.status(StatusCodes.OK).json({
     statusCode: StatusCodes.OK,
     message: 'Certificate deleted successfully',
+  });
+};
+
+export const getSpecializations = async (req, res, next) => {
+  // #swagger.tags = ['Specialization']
+  // #swagger.description = 'get all specializations'
+  const specializations = await prisma.medicalSpecialization.findMany({
+    select: {
+      id: true,
+      title: true,
+      description: true,
+    },
+  });
+
+  res.status(StatusCodes.OK).json({
+    statusCode: StatusCodes.OK,
+    specializations
   });
 };

@@ -12,7 +12,11 @@ const getUser = async (authorization) => {
       throw new UnAuthenticatedError('There is no token attached to header');
     }
     const userData = await jwt.verify(token, process.env.JWT_SECRET);
-    return await prisma.user.findFirst({ where: { id: userData.id } });
+    return (
+      await prisma.$queryRawUnsafe(
+        `SELECT * FROM User WHERE id = '${userData.id}'`
+      )
+    )[0];
   } catch (err) {
     throw err;
   }
