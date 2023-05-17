@@ -27,13 +27,13 @@ export const login = async (req, res, next) => {
     throw new BadRequestError('please provide email and password');
   }
 
-  // const user = await prisma.user.findFirst({
-  //   where: {
-  //     email,
-  //   },
-  // });
+  const user = await prisma.user.findFirst({
+    where: {
+      email,
+    },
+  });
 
-  const user = (await getUser(email, password))[0];
+  // const user = (await getUser(email, password))[0];
 
   if (!user) {
     throw new NotFoundError('no user with this email and password');

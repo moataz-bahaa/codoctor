@@ -115,7 +115,7 @@
         "tags": [
           "Specialization"
         ],
-        "description": "get all specializations",
+        "description": "get all medical specializations",
         "parameters": [],
         "responses": {}
       }
@@ -125,7 +125,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "",
+        "description": "get clinc by id",
         "parameters": [
           {
             "name": "id",
@@ -142,7 +142,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "",
+        "description": "delete clinc",
         "parameters": [
           {
             "name": "id",
@@ -166,7 +166,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "Get clincs of a specific doctor",
+        "description": "get all clics of a doctor",
         "parameters": [
           {
             "name": "id",
@@ -185,7 +185,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "",
+        "description": "post new clinc",
         "parameters": [],
         "responses": {},
         "security": [
@@ -272,7 +272,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "",
+        "description": "get docotr certificates",
         "parameters": [
           {
             "name": "id",
@@ -291,7 +291,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "get all specializations",
+        "description": "post new doctor certificate",
         "parameters": [],
         "responses": {},
         "security": [
@@ -324,7 +324,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "get all specializations",
+        "description": "update doctor certificate",
         "parameters": [
           {
             "name": "id",
@@ -364,7 +364,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "",
+        "description": "delete doctor certificate",
         "parameters": [
           {
             "name": "id",
@@ -388,7 +388,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "",
+        "description": "signup for doctor",
         "parameters": [],
         "responses": {},
         "requestBody": {
@@ -434,7 +434,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "",
+        "description": "get all offline consultations",
         "parameters": [
           {
             "name": "page",
@@ -457,7 +457,7 @@
         "tags": [
           "Doctor"
         ],
-        "description": "",
+        "description": "get all online consultations",
         "parameters": [
           {
             "name": "page",

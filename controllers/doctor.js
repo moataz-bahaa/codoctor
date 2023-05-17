@@ -12,6 +12,7 @@ import { clearFile } from '../utils/upload.js';
 
 export const postSignup = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
+  // #swagger.description = 'signup for doctor'
   /*#swagger.requestBody = {
       required: true,
       '@content': {
@@ -108,6 +109,7 @@ export const postSignup = async (req, res, next) => {
 
 export const getClincs = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
+  // #swagger.description = 'get all clics of a doctor'
   // #swagger.description = 'Get clincs of a specific doctor'
 
   const { id } = req.params;
@@ -140,6 +142,7 @@ export const getClincs = async (req, res, next) => {
 
 export const postClinc = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
+  // #swagger.description = 'post new clinc'
   /*#swagger.requestBody = {
       required: true,
       '@content': {
@@ -225,6 +228,7 @@ export const postClinc = async (req, res, next) => {
 
 export const getClinc = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
+  // #swagger.description = 'get clinc by id'
 
   const { id } = req.params;
   const clinc = await prisma.clinc.findUnique({
@@ -245,6 +249,7 @@ export const getClinc = async (req, res, next) => {
 
 export const deleteClinc = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
+  // #swagger.description = 'delete clinc'
   /*#swagger.security = [{
       "bearerAuth": []
     }]
@@ -281,6 +286,7 @@ export const deleteClinc = async (req, res, next) => {
 
 export const getOfflineConsulations = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
+  // #swagger.description = 'get all offline consultations'
   /*#swagger.security = [{
       "bearerAuth": []
     }]
@@ -318,6 +324,7 @@ export const getOfflineConsulations = async (req, res, next) => {
 
 export const getOnlineConsultation = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
+  // #swagger.description = 'get all online consultations'
   /*#swagger.security = [{
       "bearerAuth": []
     }]
@@ -358,25 +365,18 @@ export const searchByNameOrSpecialization = async (req, res, next) => {
 
   const numberOfDoctors = await prisma.doctor.count();
 
-  const doctors = await prisma.$queryRawUnsafe(`
-    select
-      d.id as id,
-      firstName,
-      midName,
-      lastName,
-      m.title as medicalSpecialization,
-      avg(r.rate) as rate
-    from Doctor as d
-    left join DoctorReview as r on r.doctorId = d.id
-    join MedicalSpecialization as m on m.id = d.medicalSpecializationId
-    where 
-      d.firstName like '%${search}%' or
-      d.midName like '%${search}%' or
-      d.lastName like '%${search}%' or
-      m.title like '%${search}%'
-    group by d.id
-    limit ${ITEMS_PER_PAGE} offset ${(page - 1) * ITEMS_PER_PAGE}
-  `);
+  const doctors = await prisma.doctorDetails.findMany({
+    where: {
+      OR: [
+        { firstName: { contains: search } },
+        { midName: { contains: search } },
+        { lastName: { contains: search } },
+        { medicalSpecialization: { contains: search } },
+      ],
+    },
+    skip: (page - 1) * ITEMS_PER_PAGE,
+    take: ITEMS_PER_PAGE,
+  });
 
   res.status(StatusCodes.OK).json({
     statusCode: StatusCodes.OK,
@@ -389,6 +389,7 @@ export const searchByNameOrSpecialization = async (req, res, next) => {
 export const getDoctorProfile = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
   // #swagger.description = 'Get doctor profile'
+
   const { id } = req.params;
   const doctor = await prisma.doctor.findUnique({
     where: { id },
@@ -472,6 +473,7 @@ export const getReviews = async (req, res, next) => {
 
 export const getCertificates = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
+  // #swagger.description = 'get docotr certificates'
 
   const { id } = req.params;
 
@@ -492,15 +494,16 @@ export const getCertificates = async (req, res, next) => {
 
 export const postCertificate = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
+  // #swagger.description = 'post new doctor certificate'
   /*#swagger.requestBody = {
       required: true,
       '@content': {
-        'multipart/form-data': {
+        'application/json': {
           schema: {
             type: 'object',
             properties: {
               destination: { type: 'string'},
-              image: { type: 'file' }
+              image: { type: 'file'},
             }
           }
         }
@@ -540,6 +543,7 @@ export const postCertificate = async (req, res, next) => {
 
 export const patchCertificate = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
+  // #swagger.description = 'update doctor certificate'
   /*#swagger.requestBody = {
       required: true,
       '@content': {
@@ -593,6 +597,7 @@ export const patchCertificate = async (req, res, next) => {
 
 export const deleteCertificate = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
+  // #swagger.description = 'delete doctor certificate'
   /*#swagger.security = [{
       "bearerAuth": []
     }]
@@ -626,7 +631,8 @@ export const deleteCertificate = async (req, res, next) => {
 
 export const getSpecializations = async (req, res, next) => {
   // #swagger.tags = ['Specialization']
-  // #swagger.description = 'get all specializations'
+  // #swagger.description = 'get all medical specializations'
+
   const specializations = await prisma.medicalSpecialization.findMany({
     select: {
       id: true,
@@ -637,6 +643,6 @@ export const getSpecializations = async (req, res, next) => {
 
   res.status(StatusCodes.OK).json({
     statusCode: StatusCodes.OK,
-    specializations
+    specializations,
   });
 };

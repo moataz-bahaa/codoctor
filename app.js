@@ -32,11 +32,11 @@ app.use('/api/doctors', doctorRoutes);
 app.use('/api/patients', patientRoutes);
 
 // swagger routes
-app.use('/api-docs/json', (req, res) =>
+app.use('/docs/json', (req, res) =>
   res.json(JSON.parse(fs.readFileSync(path.resolve('swagger', 'swagger.json'))))
 );
 app.use(
-  '/api-docs',
+  '/docs',
   swaggerUi.serve,
   swaggerUi.setup(
     JSON.parse(fs.readFileSync(path.resolve('swagger', 'swagger.json')))

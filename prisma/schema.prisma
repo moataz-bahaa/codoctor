@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["views"]
@@ -17,6 +14,8 @@ model Disease {
   description   String?
   patients      Patient[]
   prescriptions Prescription[]
+
+  @@map("diseases")
 }
 
 model Medicine {
@@ -24,6 +23,8 @@ model Medicine {
   name          String
   patients      Patient[]
   prescriptions Prescription[]
+
+  @@map("medicines")
 }
 
 model Prescription {
@@ -34,6 +35,8 @@ model Prescription {
   medicines     Medicine[]
   diseases      Disease[]
   consultation  OfflineConsultation[]
+
+  @@map("prescriptions")
 }
 
 model Patient {
@@ -58,6 +61,8 @@ model Patient {
   previousMedicines          Medicine[]
   offlineConsultations       OfflineConsultation[]
   onlineConsultations        OnlineConsultations[]
+
+  @@map("patients")
 }
 
 model DoctorReview {
@@ -69,6 +74,8 @@ model DoctorReview {
   doctorId    String
   patient     Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId   String
+
+  @@map("doctors_reviews")
 }
 
 model PatientReports {
@@ -81,6 +88,8 @@ model PatientReports {
   doctor      Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   patientId   String
   doctorId    String
+
+  @@map("patient_reports")
 }
 
 model Doctor {
@@ -105,6 +114,8 @@ model Doctor {
   medicalSpecializationId    String
   patientReports             PatientReports[]
   onlineConsultations        OnlineConsultations[]
+
+  @@map("doctors")
 }
 
 model MedicalSpecialization {
@@ -112,6 +123,8 @@ model MedicalSpecialization {
   title       String
   description String?
   doctors     Doctor[]
+
+  @@map("medical_specializations")
 }
 
 model Clinc {
@@ -124,6 +137,8 @@ model Clinc {
   doctorId         String
   workAppointments WorkAppointments[]
   consultations    OfflineConsultation[]
+
+  @@map("clincs")
 }
 
 model WorkAppointments {
@@ -135,6 +150,8 @@ model WorkAppointments {
   clincId  String?
   doctor   Doctor? @relation(fields: [doctorId], references: [id])
   doctorId String?
+
+  @@map("work_appointments")
 }
 
 model Certificate {
@@ -143,6 +160,8 @@ model Certificate {
   imageUrl    String?
   doctor      Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   doctorId    String
+
+  @@map("certificates")
 }
 
 model OfflineConsultation {
@@ -156,6 +175,8 @@ model OfflineConsultation {
   patientId      String
   prescription   Prescription? @relation(fields: [prescriptionId], references: [id])
   prescriptionId String?       @unique
+
+  @@map("offline_consultations")
 }
 
 model OnlineConsultations {
@@ -168,6 +189,8 @@ model OnlineConsultations {
   patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId   String
   chat        Chat?
+
+  @@map("online_consultations")
 }
 
 model Chat {
@@ -176,6 +199,8 @@ model Chat {
   messages              Message[]
   consultation          OnlineConsultations @relation(fields: [onlineConsultationsId], references: [id], onDelete: Cascade)
   onlineConsultationsId String              @unique
+
+  @@map("chats")
 }
 
 model Message {
@@ -187,24 +212,45 @@ model Message {
   chat            Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId          String
   senderId        String
+
+  @@map("messages")
 }
 
 model Admin {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
+  id        String  @id @default(uuid())
+  firstName String
+  midName   String?
+  lastName  String
+  email     String  @unique
+  password  String
+
+  @@map("admins")
 }
 
 enum GENDER {
-  MALE
-  FEMALE
+  male
+  female
 }
 
 view User {
-  id       String @unique
-  email    String @unique
-  password String
-  name     String
-  role     String
+  id        String  @unique
+  email     String  @unique
+  password  String
+  firstName String
+  midName   String?
+  lastName  String
+  role      String
+
+  @@map("users")
+}
+
+view DoctorDetails {
+  id                    String  @unique
+  firstName             String
+  midName               String?
+  lastName              String
+  rate                  Int?
+  medicalSpecialization String
+
+  @@map("doctors_view")
 }

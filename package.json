@@ -6,16 +6,23 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
+    "build": "webpack",
     "dev": "nodemon ./swagger/swagger.gen.js",
     "swagger-autogen": "node ./swagger/swagger.gen.js",
-    "prisma:seed": "node ./prisma/seed.js"
+    "seed": "node ./prisma/seed.js"
   },
   "author": "moataz",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.21.8",
+    "@babel/preset-env": "^7.21.5",
+    "babel-loader": "^9.1.2",
     "nodemon": "^2.0.20",
     "prisma": "^4.10.1",
-    "swagger-autogen": "^2.23.1"
+    "swagger-autogen": "^2.23.1",
+    "webpack": "^5.83.0",
+    "webpack-cli": "^5.1.1",
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
     "@prisma/client": "^4.10.1",

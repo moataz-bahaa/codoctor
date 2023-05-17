@@ -14,9 +14,9 @@ const getUser = async (authorization) => {
     const userData = await jwt.verify(token, process.env.JWT_SECRET);
     return (
       await prisma.$queryRawUnsafe(
-        `SELECT * FROM User WHERE id = '${userData.id}'`
+        `SELECT * FROM users WHERE id = '${userData.id}'`
       )
-    )[0];
+    )?.[0];
   } catch (err) {
     throw err;
   }
