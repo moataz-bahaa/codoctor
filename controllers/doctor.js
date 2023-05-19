@@ -516,11 +516,11 @@ export const postCertificate = async (req, res, next) => {
   */
   const { destination } = req.body;
   const image = req.file;
-  if (!destination || !image) {
+  if (!destination) {
     throw new BadRequestError('please provide all data');
   }
 
-  const imageUrl = image.path.replace('\\', '/');
+  const imageUrl = image?.path?.replace('\\', '/') ?? null;
 
   const certificate = await prisma.certificate.create({
     data: {
