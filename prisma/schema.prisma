@@ -194,11 +194,14 @@ model OnlineConsultations {
 }
 
 model Chat {
-  id                    String              @id @default(uuid())
-  name                  String?
-  messages              Message[]
-  consultation          OnlineConsultations @relation(fields: [onlineConsultationsId], references: [id], onDelete: Cascade)
-  onlineConsultationsId String              @unique
+  id   String  @id @default(uuid())
+  name String?
+
+
+  messages     Message[]
+  consultation OnlineConsultations @relation(fields: [onlineConsultationsId], references: [id], onDelete: Cascade)
+
+  onlineConsultationsId String @unique
 
   @@map("chats")
 }
@@ -209,8 +212,10 @@ model Message {
   attachedFileUrl String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
   chat            Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId          String
+  
   senderId        String
 
   @@map("messages")

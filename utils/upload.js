@@ -1,14 +1,15 @@
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'files/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
+cloudinary.config({
+  cloud_name: 'dzccxy3qd',
+  api_key: '694755121692284',
+  api_secret: 'yF4VmJkaJpUdsNkWB7avgacn97I',
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
 });
 
 const fileFilter = (req, file, cb) => {
@@ -25,14 +26,6 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-export const clearFile = (url) => {
-  const filePath = path.resolve(url);
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      console.log(err);
-      // throw err;
-    }
-  });
-};
+export const clearFile = (public_id) => cloudinary.uploader.destroy(public_id);
 
 export default upload;

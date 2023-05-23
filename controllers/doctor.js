@@ -109,7 +109,6 @@ export const postSignup = async (req, res, next) => {
 
 export const getClincs = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
-  // #swagger.description = 'get all clics of a doctor'
   // #swagger.description = 'Get clincs of a specific doctor'
 
   const { id } = req.params;
@@ -131,6 +130,7 @@ export const getClincs = async (req, res, next) => {
       name: true,
       phone: true,
       reservationPrice: true,
+      workAppointments: true,
     },
   });
 

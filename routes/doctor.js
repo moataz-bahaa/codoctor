@@ -56,4 +56,27 @@ router.get('/offline-consultations', isAdminOrDoctor, getOfflineConsulations);
 
 router.get('/online-consultations', isAdminOrDoctor, getOnlineConsultation);
 
+router.post('/test-upload', upload.single('file'), async (req, res) => {
+  // #swagger.tags = ['Test']
+  /*#swagger.requestBody = {
+      required: true,
+      '@content': {
+        'multipart/form-data': {
+          schema: {
+            type: 'object',
+            properties: {
+              file: { type: 'file'},
+            }
+          }
+        }
+      }
+    }
+  */
+
+  console.log(req.file);
+  res.status(200).json({
+    file: req.file,
+  });
+});
+
 export default router;
