@@ -31,7 +31,7 @@ CREATE TABLE `patients` (
     `firstName` VARCHAR(191) NOT NULL,
     `midName` VARCHAR(191) NULL,
     `lastName` VARCHAR(191) NOT NULL,
-    `gender` ENUM('MALE', 'FEMALE') NULL,
+    `gender` ENUM('male', 'female') NULL,
     `nationalId` VARCHAR(191) NULL,
     `bloodGroup` VARCHAR(191) NULL,
     `weight` VARCHAR(191) NULL,
@@ -78,7 +78,7 @@ CREATE TABLE `doctors` (
     `firstName` VARCHAR(191) NOT NULL,
     `midName` VARCHAR(191) NULL,
     `lastName` VARCHAR(191) NOT NULL,
-    `gender` ENUM('MALE', 'FEMALE') NOT NULL,
+    `gender` ENUM('male', 'female') NOT NULL,
     `nationalId` VARCHAR(191) NULL,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
@@ -173,6 +173,15 @@ CREATE TABLE `chats` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `ChatUser` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `chatId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `messages` (
     `id` VARCHAR(191) NOT NULL,
     `content` VARCHAR(191) NULL,
@@ -180,7 +189,7 @@ CREATE TABLE `messages` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `chatId` VARCHAR(191) NOT NULL,
-    `senderId` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -278,6 +287,9 @@ ALTER TABLE `online_consultations` ADD CONSTRAINT `online_consultations_patientI
 
 -- AddForeignKey
 ALTER TABLE `chats` ADD CONSTRAINT `chats_onlineConsultationsId_fkey` FOREIGN KEY (`onlineConsultationsId`) REFERENCES `online_consultations`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ChatUser` ADD CONSTRAINT `ChatUser_chatId_fkey` FOREIGN KEY (`chatId`) REFERENCES `chats`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `messages` ADD CONSTRAINT `messages_chatId_fkey` FOREIGN KEY (`chatId`) REFERENCES `chats`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

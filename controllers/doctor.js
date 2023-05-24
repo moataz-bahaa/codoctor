@@ -235,6 +235,10 @@ export const getClinc = async (req, res, next) => {
     where: {
       id,
     },
+    include: {
+      workAppointments: true,
+      consultations: true,
+    },
   });
 
   if (!clinc) {
@@ -292,7 +296,10 @@ export const getOfflineConsulations = async (req, res, next) => {
     }]
   */
 
-  const page = +req.query.page ?? 1;
+  let page = +req.query.page;
+
+  if (isNaN(page)) page = 1;
+
   const numberOfItems = await prisma.offlineConsultation.count({
     where: {
       clinc: {
@@ -330,7 +337,9 @@ export const getOnlineConsultation = async (req, res, next) => {
     }]
   */
 
-  const page = req.query.page ?? 1;
+  let page = +req.query.page;
+
+  if (isNaN(page)) page = 1;
 
   const numberOfItems = await prisma.onlineConsultations.count({
     where: {
@@ -353,7 +362,7 @@ export const getOnlineConsultation = async (req, res, next) => {
   });
 };
 
-export const searchByNameOrSpecialization = async (req, res, next) => {
+export const getDoctors = async (req, res, next) => {
   // #swagger.tags = ['Doctor']
   // #swagger.description = 'search for doctors by name or by specializtion'
 
@@ -363,7 +372,16 @@ export const searchByNameOrSpecialization = async (req, res, next) => {
 
   if (!search) search = '';
 
-  const numberOfDoctors = await prisma.doctor.count();
+  const numberOfDoctors = await prisma.doctorDetails.count({
+    where: {
+      OR: [
+        { firstName: { contains: search } },
+        { midName: { contains: search } },
+        { lastName: { contains: search } },
+        { medicalSpecialization: { contains: search } },
+      ],
+    },
+  });
 
   const doctors = await prisma.doctorDetails.findMany({
     where: {
@@ -644,5 +662,32 @@ export const getSpecializations = async (req, res, next) => {
   res.status(StatusCodes.OK).json({
     statusCode: StatusCodes.OK,
     specializations,
+  });
+};
+
+export const getDoctorSchedule = async (req, res, next) => {
+  // #swagger.tags = ['Doctor']
+  // #swagger.description = 'Get doctor schedule'
+  /*#swagger.security = [{
+      "bearerAuth": []
+    }]
+  */
+
+  const clincs = await prisma.clinc.findMany({
+    where: {
+      doctorId: req.doctor?.id,
+    },
+    include: {
+      consultations: {
+        include: {
+          patient: true,
+          prescription: true,
+        },
+      },
+    },
+  });
+
+  res.status(StatusCodes.OK).json({
+    clincs,
   });
 };

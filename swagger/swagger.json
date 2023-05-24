@@ -110,49 +110,13 @@
         "responses": {}
       }
     },
-    "/api/doctors/specializations": {
+    "/api/doctors/schedule": {
       "get": {
         "tags": [
-          "Specialization"
+          "Doctor"
         ],
-        "description": "get all medical specializations",
+        "description": "Get doctor schedule",
         "parameters": [],
-        "responses": {}
-      }
-    },
-    "/api/doctors/clincs/{id}": {
-      "get": {
-        "tags": [
-          "Doctor"
-        ],
-        "description": "get clinc by id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {}
-      },
-      "delete": {
-        "tags": [
-          "Doctor"
-        ],
-        "description": "delete clinc",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {},
         "security": [
           {
@@ -161,22 +125,13 @@
         ]
       }
     },
-    "/api/doctors/{id}/clincs": {
+    "/api/doctors/specializations": {
       "get": {
         "tags": [
-          "Doctor"
+          "Specialization"
         ],
-        "description": "Get clincs of a specific doctor",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "description": "get all medical specializations",
+        "parameters": [],
         "responses": {}
       }
     },
@@ -229,12 +184,12 @@
         }
       }
     },
-    "/api/doctors/{id}": {
+    "/api/doctors/clincs/{id}": {
       "get": {
         "tags": [
           "Doctor"
         ],
-        "description": "Get doctor profile",
+        "description": "get clinc by id",
         "parameters": [
           {
             "name": "id",
@@ -246,14 +201,12 @@
           }
         ],
         "responses": {}
-      }
-    },
-    "/api/doctors/{id}/reviews": {
-      "get": {
+      },
+      "delete": {
         "tags": [
           "Doctor"
         ],
-        "description": "Get doctor reviews",
+        "description": "delete clinc",
         "parameters": [
           {
             "name": "id",
@@ -264,26 +217,12 @@
             }
           }
         ],
-        "responses": {}
-      }
-    },
-    "/api/doctors/{id}/certificates": {
-      "get": {
-        "tags": [
-          "Doctor"
-        ],
-        "description": "get docotr certificates",
-        "parameters": [
+        "responses": {},
+        "security": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "bearerAuth": []
           }
-        ],
-        "responses": {}
+        ]
       }
     },
     "/api/doctors/certificate": {
@@ -473,6 +412,82 @@
             "bearerAuth": []
           }
         ]
+      }
+    },
+    "/api/doctors/{id}": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "Get doctor profile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/doctors/{id}/clincs": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "Get clincs of a specific doctor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/doctors/{id}/reviews": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "Get doctor reviews",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/doctors/{id}/certificates": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "get docotr certificates",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
       }
     },
     "/api/doctors/{{where{id:id}": {

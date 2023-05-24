@@ -197,13 +197,24 @@ model Chat {
   id   String  @id @default(uuid())
   name String?
 
-
   messages     Message[]
   consultation OnlineConsultations @relation(fields: [onlineConsultationsId], references: [id], onDelete: Cascade)
 
   onlineConsultationsId String @unique
 
+  users ChatUser[]
+
   @@map("chats")
+}
+
+model ChatUser {
+  id String @id @default(uuid())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  chat   Chat   @relation(fields: [chatId], references: [id])
+  chatId String
 }
 
 model Message {
@@ -213,10 +224,11 @@ model Message {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  chat            Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  chatId          String
-  
-  senderId        String
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId String
+
+  sender User   @relation(fields: [userId], references: [id])
+  userId String
 
   @@map("messages")
 }
@@ -238,13 +250,16 @@ enum GENDER {
 }
 
 view User {
-  id        String  @unique
+  id        String  @id
   email     String  @unique
   password  String
   firstName String
   midName   String?
   lastName  String
   role      String
+
+  messages Message[]
+  chats    ChatUser[]
 
   @@map("users")
 }
