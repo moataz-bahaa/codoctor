@@ -475,35 +475,6 @@
         ]
       }
     },
-    "/api/doctors/test-upload": {
-      "post": {
-        "tags": [
-          "Test"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": {
-                    "type": "file"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/doctors/{{where{id:id}": {
       "delete": {
         "description": "",
