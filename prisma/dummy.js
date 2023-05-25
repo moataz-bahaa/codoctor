@@ -9,7 +9,7 @@ import { faker } from '@faker-js/faker';
       const sp = await prisma.medicalSpecialization.create({
         data: {
           title: faker.string.alpha(),
-          description: faker.lorem.lines(1)
+          description: faker.lorem.lines(1),
         },
       });
 
@@ -45,6 +45,73 @@ import { faker } from '@faker-js/faker';
           phone: faker.phone.number(),
           reservationPrice: faker.number.int({ max: 1000 }),
           doctorId: faker.helpers.arrayElement(doctors).id,
+        },
+      });
+    }
+
+    // generate 20 patient
+    const patients = [];
+    for (let i = 0; i < 20; i++) {
+      const patient = await prisma.patient.create({
+        data: {
+          email: faker.internet.email(),
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          password: faker.internet.password(),
+        },
+      });
+
+      patients.push(patient);
+    }
+
+    // generate 20 consulations
+    const onlineConsultations = [];
+    for (let i = 0; i < 20; i++) {
+      const doctor = faker.helpers.arrayElement(doctors),
+        patient = faker.helpers.arrayElement(patients);
+
+      const onlineConsultation = await prisma.onlineConsultations.create({
+        data: {
+          appointment: faker.date.anytime(),
+          doctorId: doctor.id,
+          patientId: patient.id,
+          chat: {
+            create: {
+              name: `${doctor.firstName} - ${patient.firstName}`,
+            },
+          },
+        },
+        include: {
+          chat: true,
+          doctor: true,
+          patient: true,
+        },
+      });
+
+      await prisma.chatUser.createMany({
+        data: [
+          {
+            chatId: onlineConsultation.chat.id,
+            userId: doctor.id,
+          },
+          {
+            chatId: onlineConsultation.chat.id,
+            userId: patient.id,
+          },
+        ],
+      });
+
+      onlineConsultations.push(onlineConsultation);
+    }
+
+    // generate 100 message
+    for (let i = 0; i < 100; i++) {
+      const consulation = faker.helpers.arrayElement(onlineConsultations);
+      const msg = await prisma.message.create({
+        data: {
+          chatId: consulation.chat.id,
+          userId: i % 2 == 0 ? consulation.doctorId : consulation.patientId,
+          content: faker.color.human(),
         },
       });
     }

@@ -33,13 +33,20 @@ const addDummyMedicalSpecializations = async () => {
 
 (async () => {
   try {
-    const users = await prisma.user.findMany({
+    const user = await prisma.user.findUnique({
+      where: {
+        id: '5f8c15b9-4793-44f3-a372-1420112cd4e9',
+      },
       include: {
-        messages: true,
+        chats: {
+          include: {
+            chat: true,
+          }
+        },
       }
     });
 
-    console.log(users);
+    console.log(user.chats);
   } catch (err) {
     console.log(err);
   }

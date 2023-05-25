@@ -55,6 +55,40 @@
         }
       }
     },
+    "/api/user/chats": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/user/chats/{chatId}": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "get all chat data (consultation, users, messages)",
+        "parameters": [
+          {
+            "name": "chatId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/api/admin/doctor/veryfiy": {
       "post": {
         "tags": [

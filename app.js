@@ -56,10 +56,9 @@ const server = app.listen(port, () => {
   console.log(`server is running on port: ${port}`);
 });
 
-// ************************
-// socketx
-// ************************
-const io = new Server(server, {
+
+// socket server
+export const io = new Server(server, {
   cors: {
     origin: '*',
   },
@@ -67,34 +66,30 @@ const io = new Server(server, {
 
 // room -> chatId
 io.on('connection', (socket) => {
-  socket.on('setup', (user) => {
-    socket.join(user.id);
+  socket.on('setup', (userId) => {
+    socket.join(userId);
     socket.emit('connected');
   });
 
-  socket.on('join-chet', (room) => {
-    socket.join(room);
+  socket.on('join-chat', (chat) => {
+    socket.join(chat);
   });
 
-  socket.on('typing', (room) => socket.in(room).emit('typing'));
-  socket.on('stop-typing', (room) => socket.in(room).emit('stop-typing'));
+  socket.on('typing', (chat) => socket.in(chat).emit('typing'));
+  socket.on('stop-typing', (chat) => socket.in(chat).emit('stop-typing'));
 
-  socket.on('send-msg', (message) => {
-    const chat = message.chat;
-
-    if (!chat.users) return;
-
-    // this will send message for only users opening that chat
-    // socket.in(chat.id).emit('recieve-msg', message);
-
-    chat.users.forEach((user) => {
-      if (user._id === message.sender._id) return;
-
-      socket.in(user._id).emit('recieve-msg', message);
+  socket.on('disconnect', () => {
+    // Remove the user from any rooms they are in
+    Object.keys(socket.rooms).forEach((room) => {
+      socket.leave(room);
     });
   });
-
-  socket.off('setup', (user) => {
-    socket.leave(user.id);
-  });
 });
+
+export const sendMessage = async (msg) => {
+  msg.chat?.users?.forEach((user) => {
+    if (user.id === msg.senderId) return;
+
+    io.to(user.id).emit('new-msg', msg);
+  });
+};

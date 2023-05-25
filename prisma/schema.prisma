@@ -60,7 +60,7 @@ model Patient {
   previousDiseases           Disease[]
   previousMedicines          Medicine[]
   offlineConsultations       OfflineConsultation[]
-  onlineConsultations        OnlineConsultations[]
+  onlineConsultations        OnlineConsultation[]
 
   @@map("patients")
 }
@@ -113,7 +113,7 @@ model Doctor {
   specialization             MedicalSpecialization @relation(fields: [medicalSpecializationId], references: [id])
   medicalSpecializationId    String
   patientReports             PatientReports[]
-  onlineConsultations        OnlineConsultations[]
+  onlineConsultations        OnlineConsultation[]
 
   @@map("doctors")
 }
@@ -179,7 +179,7 @@ model OfflineConsultation {
   @@map("offline_consultations")
 }
 
-model OnlineConsultations {
+model OnlineConsultation {
   id          String   @id @default(uuid())
   appointment DateTime
   createdAt   DateTime @default(now())
@@ -188,7 +188,8 @@ model OnlineConsultations {
   doctorId    String
   patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId   String
-  chat        Chat?
+
+  chat Chat?
 
   @@map("online_consultations")
 }
@@ -197,10 +198,10 @@ model Chat {
   id   String  @id @default(uuid())
   name String?
 
-  messages     Message[]
-  consultation OnlineConsultations @relation(fields: [onlineConsultationsId], references: [id], onDelete: Cascade)
+  messages Message[]
 
-  onlineConsultationsId String @unique
+  consultation   OnlineConsultation @relation(fields: [consultationId], references: [id], onDelete: Cascade)
+  consultationId String             @unique
 
   users ChatUser[]
 
@@ -227,8 +228,8 @@ model Message {
   chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId String
 
-  sender User   @relation(fields: [userId], references: [id])
-  userId String
+  sender   User   @relation(fields: [senderId], references: [id])
+  senderId String
 
   @@map("messages")
 }

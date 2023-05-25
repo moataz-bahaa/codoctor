@@ -3,7 +3,6 @@ import { BadRequestError, NotFoundError } from '../utils/errors.js';
 import jwt from 'jsonwebtoken';
 import { StatusCodes } from 'http-status-codes';
 import { comparePassword } from '../utils/bcrypt.js';
-import { getUser } from '../utils/user.js';
 
 export const login = async (req, res, next) => {
   // #swagger.tags = ['User']
@@ -45,7 +44,6 @@ export const login = async (req, res, next) => {
     throw new NotFoundError(`password doesn't match`);
   }
 
-
   const token = jwt.sign(
     { id: user.id, email: user.email },
     process.env.JWT_SECRET
@@ -59,3 +57,64 @@ export const login = async (req, res, next) => {
     token,
   });
 };
+
+export const getChats = async (req, res, next) => {
+  // #swagger.tags = ['User']
+  /*#swagger.security = [{
+      "bearerAuth": []
+    }]
+  */
+
+  const chats = await prisma.chat.findMany({
+    where: {
+      users: {
+        some: {
+          userId: req.user.id,
+        },
+      },
+    },
+  });
+
+  res.status(StatusCodes.OK).json({
+    chats,
+  });
+};
+
+export const getChatWithMessages = async (req, res, next) => {
+  // #swagger.tags = ['User']
+  // #swagger.description = 'get all chat data (consultation, users, messages)'
+
+  const { chatId } = req.params;
+
+  const chat = await prisma.chat.findUnique({
+    where: {
+      id: chatId,
+    },
+    include: {
+      consultation: true,
+      users: {
+        include: {
+          user: true,
+        },
+      },
+      messages: true,
+    },
+  });
+
+  if (!chat) {
+    throw new NotFoundError();
+  }
+
+  const users = chat.users.map((u) => ({
+    ...u.user,
+  }));
+
+  res.status(StatusCodes.OK).json({
+    chat: {
+      ...chat,
+      users,
+    },
+  });
+};
+
+export const sendMessage = async (req, res, next) => {};

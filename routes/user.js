@@ -1,8 +1,13 @@
 import { Router } from 'express';
-import { login } from '../controllers/user.js';
+import { getChats, getChatWithMessages, login } from '../controllers/user.js';
+import { isAuth } from '../middlewares/auth.js';
 
 const router = Router();
 
 router.post('/auth/login', login);
 
-export default router
+router.post('/chats', isAuth, getChats);
+
+router.post('/chats/:chatId', isAuth, getChatWithMessages);
+
+export default router;
