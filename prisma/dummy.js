@@ -70,7 +70,7 @@ import { faker } from '@faker-js/faker';
       const doctor = faker.helpers.arrayElement(doctors),
         patient = faker.helpers.arrayElement(patients);
 
-      const onlineConsultation = await prisma.onlineConsultations.create({
+      const onlineConsultation = await prisma.onlineConsultation.create({
         data: {
           appointment: faker.date.anytime(),
           doctorId: doctor.id,
@@ -110,7 +110,7 @@ import { faker } from '@faker-js/faker';
       const msg = await prisma.message.create({
         data: {
           chatId: consulation.chat.id,
-          userId: i % 2 == 0 ? consulation.doctorId : consulation.patientId,
+          senderId: i % 2 == 0 ? consulation.doctorId : consulation.patientId,
           content: faker.color.human(),
         },
       });

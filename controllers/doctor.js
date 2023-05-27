@@ -341,12 +341,12 @@ export const getOnlineConsultation = async (req, res, next) => {
 
   if (isNaN(page)) page = 1;
 
-  const numberOfItems = await prisma.onlineConsultations.count({
+  const numberOfItems = await prisma.onlineConsultation.count({
     where: {
       doctorId: req.doctor.id,
     },
   });
-  const consultations = await prisma.onlineConsultations.findMany({
+  const consultations = await prisma.onlineConsultation.findMany({
     where: {
       doctorId: req.doctor.id,
     },

@@ -166,9 +166,9 @@ CREATE TABLE `online_consultations` (
 CREATE TABLE `chats` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NULL,
-    `onlineConsultationsId` VARCHAR(191) NOT NULL,
+    `consultationId` VARCHAR(191) NOT NULL,
 
-    UNIQUE INDEX `chats_onlineConsultationsId_key`(`onlineConsultationsId`),
+    UNIQUE INDEX `chats_consultationId_key`(`consultationId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -189,7 +189,7 @@ CREATE TABLE `messages` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `chatId` VARCHAR(191) NOT NULL,
-    `userId` VARCHAR(191) NOT NULL,
+    `senderId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -286,7 +286,7 @@ ALTER TABLE `online_consultations` ADD CONSTRAINT `online_consultations_doctorId
 ALTER TABLE `online_consultations` ADD CONSTRAINT `online_consultations_patientId_fkey` FOREIGN KEY (`patientId`) REFERENCES `patients`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `chats` ADD CONSTRAINT `chats_onlineConsultationsId_fkey` FOREIGN KEY (`onlineConsultationsId`) REFERENCES `online_consultations`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `chats` ADD CONSTRAINT `chats_consultationId_fkey` FOREIGN KEY (`consultationId`) REFERENCES `online_consultations`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `ChatUser` ADD CONSTRAINT `ChatUser_chatId_fkey` FOREIGN KEY (`chatId`) REFERENCES `chats`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

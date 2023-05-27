@@ -3,6 +3,7 @@ import { BadRequestError, NotFoundError } from '../utils/errors.js';
 import jwt from 'jsonwebtoken';
 import { StatusCodes } from 'http-status-codes';
 import { comparePassword } from '../utils/bcrypt.js';
+import { sendMessageToSocket } from '../app.js';
 
 export const login = async (req, res, next) => {
   // #swagger.tags = ['User']
@@ -117,4 +118,62 @@ export const getChatWithMessages = async (req, res, next) => {
   });
 };
 
-export const sendMessage = async (req, res, next) => {};
+export const postMessage = async (req, res, next) => {
+  // #swagger.tags = ['User']
+  // #swagger.description = 'post new message'
+  /*#swagger.security = [{
+      "bearerAuth": []
+    }]
+  */
+  /*#swagger.requestBody = {
+      required: true,
+      '@content': {
+        'multipart/form-data': {
+          schema: {
+            type: 'object',
+            properties: {
+              content: { type: 'string'},
+              attachedFile: { type: 'file'},
+            }
+          }
+        }
+      }
+    }
+  */
+
+  const { content } = req.body;
+  const { chatId } = req.params;
+
+  const attachedFile = req.file;
+
+  const chat = await prisma.chat.findUnique({
+    where: {
+      id: chatId,
+    },
+    include: {
+      users: true,
+    },
+  });
+
+  if (!chat) {
+    throw new NotFoundError('no chat with this id');
+  }
+
+  const message = await prisma.message.create({
+    data: {
+      senderId: req.user.id,
+      chatId: chat.id,
+      attachedFileUrl: attachedFile?.path,
+      content,
+    },
+  });
+
+  res.status(StatusCodes.OK).json({
+    message,
+  });
+
+  sendMessageToSocket({
+    chat,
+    ...message,
+  });
+};

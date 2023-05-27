@@ -56,7 +56,7 @@
       }
     },
     "/api/user/chats": {
-      "post": {
+      "get": {
         "tags": [
           "User"
         ],
@@ -71,7 +71,7 @@
       }
     },
     "/api/user/chats/{chatId}": {
-      "post": {
+      "get": {
         "tags": [
           "User"
         ],
@@ -87,6 +87,46 @@
           }
         ],
         "responses": {}
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "post new message",
+        "parameters": [
+          {
+            "name": "chatId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  },
+                  "attachedFile": {
+                    "type": "file"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/admin/doctor/veryfiy": {
@@ -529,6 +569,137 @@
         "description": "",
         "parameters": [],
         "responses": {}
+      }
+    },
+    "/api/patients/signup": {
+      "post": {
+        "tags": [
+          "Patient"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "midName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "gender": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/patients/profile/{patientId}": {
+      "get": {
+        "tags": [
+          "Patient"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "patientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/patients/doctor-review": {
+      "post": {
+        "tags": [
+          "Patient"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "doctorId": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "rate": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/patients/book/online": {
+      "post": {
+        "tags": [
+          "Patient"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "doctorId": {
+                    "type": "string"
+                  },
+                  "appointment": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   },

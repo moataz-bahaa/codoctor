@@ -86,10 +86,10 @@ io.on('connection', (socket) => {
   });
 });
 
-export const sendMessage = async (msg) => {
+export const sendMessageToSocket = async (msg) => {
+  console.log(msg);
   msg.chat?.users?.forEach((user) => {
     if (user.id === msg.senderId) return;
-
     io.to(user.id).emit('new-msg', msg);
   });
 };
