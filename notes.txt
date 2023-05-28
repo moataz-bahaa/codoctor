@@ -1,2 +1,11 @@
 schedule for doctor
   liset of clincs and patients 
+
+one caht foreach doctor and patient regardless of number of online specializations
+
+
+{
+  stomaic: 0,
+}
+
+

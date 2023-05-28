@@ -71,13 +71,6 @@ io.on('connection', (socket) => {
     socket.emit('connected');
   });
 
-  socket.on('join-chat', (chat) => {
-    socket.join(chat);
-  });
-
-  socket.on('typing', (chat) => socket.in(chat).emit('typing'));
-  socket.on('stop-typing', (chat) => socket.in(chat).emit('stop-typing'));
-
   socket.on('disconnect', () => {
     // Remove the user from any rooms they are in
     Object.keys(socket.rooms).forEach((room) => {

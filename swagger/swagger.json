@@ -701,6 +701,31 @@
           }
         }
       }
+    },
+    "/api/patients/disease-prediction": {
+      "post": {
+        "tags": [
+          "Patient"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {},
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "diseases": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   getPatientProfile,
   postBookOnlineConsultation,
+  postDiseasePrediction,
   postDoctorReview,
   postSignup,
 } from '../controllers/paitent.js';
@@ -16,5 +17,7 @@ router.get('/profile/:patientId', getPatientProfile);
 router.post('/doctor-review', isPatient, postDoctorReview);
 
 router.post('/book/online', isPatient, postBookOnlineConsultation);
+
+router.post('/disease-prediction', postDiseasePrediction);
 
 export default router;

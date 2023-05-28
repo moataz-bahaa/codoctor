@@ -9,6 +9,7 @@ import { ITEMS_PER_PAGE } from '../utils/constants.js';
 import jwt from 'jsonwebtoken';
 import { hash } from '../utils/bcrypt.js';
 import { clearFile } from '../utils/upload.js';
+import axios from 'axios';
 
 export const postSignup = async (req, res, next) => {
   // #swagger.tags = ['Patient']
@@ -232,4 +233,45 @@ export const postBookOnlineConsultation = async (req, res, next) => {
   res.status(StatusCodes.OK).json({
     consulation,
   });
+};
+
+export const postDiseasePrediction = async (req, res, next) => {
+  // #swagger.tags = ['Patient']
+  /*#swagger.requestBody = {
+      required: true,
+      '@content': {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              diseases: { type: 'object'},
+            }
+          }
+        }
+      }
+    }
+  */
+
+  const { diseases } = req.body;
+  const inputArray = Object.keys(diseases).map((key) => diseases[key]);
+
+  try {
+    const { data: result } = await axios.post(
+      `https://flask-maching-learning-models.onrender.com/codoctor/predict`,
+      {
+        inputArray,
+      }
+    );
+
+    res.status(StatusCodes.OK).json({
+      result,
+    });
+  } catch (err) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      status: 'Error',
+      message: 'Error in the machine learning model',
+      length: inputArray.length,
+    });
+  }
 };
