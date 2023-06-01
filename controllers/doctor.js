@@ -429,7 +429,13 @@ export const getDoctorProfile = async (req, res, next) => {
         },
       },
       reviews: {
-        select: { id: true, title: true, rate: true, description: true },
+        select: {
+          id: true,
+          title: true,
+          rate: true,
+          description: true,
+          patient: true,
+        },
       },
       _count: {
         select: {

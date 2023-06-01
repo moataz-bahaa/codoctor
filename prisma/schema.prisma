@@ -189,7 +189,8 @@ model OnlineConsultation {
   patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId   String
 
-  chat Chat?
+  chat   Chat   @relation(fields: [chatId], references: [id])
+  chatId String
 
   @@map("online_consultations")
 }
@@ -200,8 +201,7 @@ model Chat {
 
   messages Message[]
 
-  consultation   OnlineConsultation @relation(fields: [consultationId], references: [id], onDelete: Cascade)
-  consultationId String             @unique
+  consultations OnlineConsultation[]
 
   users ChatUser[]
 

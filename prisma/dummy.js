@@ -64,6 +64,19 @@ import { faker } from '@faker-js/faker';
       patients.push(patient);
     }
 
+    // genere 50 doctor review
+    for (let i = 0; i < 50; i++) {
+      await prisma.doctorReview.create({
+        data: {
+          doctorId: faker.helpers.arrayElement(doctors).id,
+          patientId: faker.helpers.arrayElement(patients).id,
+          rate: faker.number.int({ min: 1, max: 5 }),
+          title: faker.lorem.word(5),
+          description: faker.lorem.sentence({ min: 2, max: 6 }),
+        },
+      });
+    }
+
     // generate 20 consulations
     const onlineConsultations = [];
     for (let i = 0; i < 20; i++) {
@@ -73,8 +86,16 @@ import { faker } from '@faker-js/faker';
       const onlineConsultation = await prisma.onlineConsultation.create({
         data: {
           appointment: faker.date.anytime(),
-          doctorId: doctor.id,
-          patientId: patient.id,
+          doctor: {
+            connect: {
+              id: doctor.id,
+            },
+          },
+          patient: {
+            connect: {
+              id: patient.id,
+            },
+          },
           chat: {
             create: {
               name: `${doctor.firstName} - ${patient.firstName}`,

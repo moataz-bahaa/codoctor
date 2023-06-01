@@ -189,16 +189,37 @@ export const postBookOnlineConsultation = async (req, res, next) => {
     throw new NotFoundError('no doctor with this id');
   }
 
+  const previousConsultation = await prisma.onlineConsultation.findFirst({
+    where: {
+      doctorId: doctor.id,
+      patientId: req.patient.id,
+    },
+  });
+
   const onlineConsultation = await prisma.onlineConsultation.create({
     data: {
       appointment: new Date(),
-      doctorId: doctor.id,
-      patientId: req.patient.id,
-      chat: {
-        create: {
-          name: `${doctor.firstName} - ${req.patient.firstName}`,
-        },
+      doctor: {
+        connect: {
+          id: doctor.id
+        }
       },
+      patient: {
+        connect: {
+          id: req.patient.id
+        }
+      },
+      chat: previousConsultation
+        ? {
+            connect: {
+              id: previousConsultation.chatId,
+            },
+          }
+        : {
+            create: {
+              name: `${doctor.firstName} - ${req.patient.firstName}`,
+            },
+          },
     },
 
     include: {
@@ -206,18 +227,20 @@ export const postBookOnlineConsultation = async (req, res, next) => {
     },
   });
 
-  await prisma.chatUser.createMany({
-    data: [
-      {
-        chatId: onlineConsultation.chat.id,
-        userId: doctor.id,
-      },
-      {
-        chatId: onlineConsultation.chat.id,
-        userId: req.patient.id,
-      },
-    ],
-  });
+  if (!previousConsultation) {
+    await prisma.chatUser.createMany({
+      data: [
+        {
+          chatId: onlineConsultation.chat.id,
+          userId: doctor.id,
+        },
+        {
+          chatId: onlineConsultation.chat.id,
+          userId: req.patient.id,
+        },
+      ],
+    });
+  }
 
   const consulation = await prisma.onlineConsultation.findUnique({
     where: {

@@ -7,5 +7,3 @@ one caht foreach doctor and patient regardless of number of online specializatio
 {
   stomaic: 0,
 }
-
-
