@@ -189,6 +189,7 @@ export const postBookOnlineConsultation = async (req, res, next) => {
     throw new NotFoundError('no doctor with this id');
   }
 
+  // test
   const previousConsultation = await prisma.onlineConsultation.findFirst({
     where: {
       doctorId: doctor.id,
