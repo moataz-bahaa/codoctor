@@ -352,6 +352,20 @@ export const getOnlineConsultation = async (req, res, next) => {
     },
     skip: (page - 1) * ITEMS_PER_PAGE,
     take: ITEMS_PER_PAGE,
+    select: {
+      id: true,
+      chatId: true,
+      appointment: true,
+      updatedAt: true,
+      patient: {
+        select: {
+          id: true,
+          firstName: true,
+          midName: true,
+          lastName: true,
+        },
+      },
+    },
   });
 
   res.status(StatusCodes.OK).json({

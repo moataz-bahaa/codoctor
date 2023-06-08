@@ -79,12 +79,8 @@ io.on('connection', (socket) => {
 });
 
 export const sendMessageToSocket = async (msg) => {
-  console.log(msg);
   msg.chat?.users?.forEach((user) => {
-    // if (user.id === msg.senderId) return;
-    io.to(user.id).emit('new-msg', 'io.to');
-    io.in(user.id).emit('new-msg', 'io.in');
-    io.sockets.emit('new-msg', 'io.sockets.emit')
-    io.emit('new-msg', 'io.emit')
+    // if (user.userId === msg.senderId) return;
+    io.to(user.userId).emit('new-msg', msg);
   });
 };
