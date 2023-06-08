@@ -176,8 +176,5 @@ export const postMessage = async (req, res, next) => {
     message,
   });
 
-  sendMessageToSocket({
-    chat,
-    ...message,
-  });
+  sendMessageToSocket(chat, message);
 };

@@ -78,8 +78,8 @@ io.on('connection', (socket) => {
   });
 });
 
-export const sendMessageToSocket = async (msg) => {
-  msg.chat?.users?.forEach((user) => {
+export const sendMessageToSocket = async (chat, msg) => {
+  chat?.users?.forEach((user) => {
     // if (user.userId === msg.senderId) return;
     io.to(user.userId).emit('new-msg', msg);
   });

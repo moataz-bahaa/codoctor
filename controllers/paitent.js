@@ -201,13 +201,13 @@ export const postBookOnlineConsultation = async (req, res, next) => {
       appointment: new Date(),
       doctor: {
         connect: {
-          id: doctor.id
-        }
+          id: doctor.id,
+        },
       },
       patient: {
         connect: {
-          id: req.patient.id
-        }
+          id: req.patient.id,
+        },
       },
       chat: previousConsultation
         ? {
