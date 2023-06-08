@@ -51,11 +51,10 @@ app.use(
 
 app.use(errorHandler);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const server = app.listen(port, () => {
   console.log(`server is running on port: ${port}`);
 });
-
 
 // socket server
 export const io = new Server(server, {
@@ -66,6 +65,7 @@ export const io = new Server(server, {
 
 // room -> chatId
 io.on('connection', (socket) => {
+  console.log('socket');
   socket.on('setup', (userId) => {
     socket.join(userId);
     socket.emit('connected');
@@ -82,7 +82,7 @@ io.on('connection', (socket) => {
 export const sendMessageToSocket = async (msg) => {
   console.log(msg);
   msg.chat?.users?.forEach((user) => {
-    if (user.id === msg.senderId) return;
+    // if (user.id === msg.senderId) return;
     io.to(user.id).emit('new-msg', msg);
   });
 };

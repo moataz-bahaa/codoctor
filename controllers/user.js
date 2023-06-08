@@ -84,6 +84,10 @@ export const getChats = async (req, res, next) => {
 export const getChatWithMessages = async (req, res, next) => {
   // #swagger.tags = ['User']
   // #swagger.description = 'get all chat data (consultation, users, messages)'
+  /*#swagger.security = [{
+      "bearerAuth": []
+    }]
+  */
 
   const { chatId } = req.params;
 
@@ -92,7 +96,7 @@ export const getChatWithMessages = async (req, res, next) => {
       id: chatId,
     },
     include: {
-      consultation: true,
+      consultations: true,
       users: {
         include: {
           user: true,
