@@ -4,6 +4,7 @@ import {
   postBookOnlineConsultation,
   postDiseasePrediction,
   postDoctorReview,
+  postPatientPreviousMedicinesAndDiseases,
   postSignup,
 } from '../controllers/paitent.js';
 import { isAuth, isPatient } from '../middlewares/auth.js';
@@ -11,6 +12,8 @@ import { isAuth, isPatient } from '../middlewares/auth.js';
 const router = Router();
 
 router.post('/signup', postSignup);
+
+router.post('/profile', isPatient, postPatientPreviousMedicinesAndDiseases)
 
 router.get('/profile/:patientId', getPatientProfile);
 

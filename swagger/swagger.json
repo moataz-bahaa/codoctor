@@ -616,6 +616,50 @@
         }
       }
     },
+    "/api/patients/profile": {
+      "post": {
+        "tags": [
+          "Patient"
+        ],
+        "description": "add paitient previous diseases, and previous medicines (medical profile)",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "diseases": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "name": "heart disease",
+                        "description": "some description"
+                      }
+                    ]
+                  },
+                  "medicines": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "name": "coldfree"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/patients/profile/{patientId}": {
       "get": {
         "tags": [

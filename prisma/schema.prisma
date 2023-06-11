@@ -40,7 +40,7 @@ model Prescription {
 }
 
 model Patient {
-  id                         String                @id @default(uuid())
+  id                         String    @id @default(uuid())
   firstName                  String
   midName                    String?
   lastName                   String
@@ -50,17 +50,18 @@ model Patient {
   weight                     String?
   height                     String?
   age                        Int?
-  isBlocked                  Boolean               @default(false)
-  email                      String                @unique
+  isBlocked                  Boolean   @default(false)
+  email                      String    @unique
   password                   String
   resetPasswordToken         DateTime?
   resertPasswordTokenExpires DateTime?
-  doctorReviews              DoctorReview[]
-  patientReports             PatientReports[]
-  previousDiseases           Disease[]
-  previousMedicines          Medicine[]
-  offlineConsultations       OfflineConsultation[]
-  onlineConsultations        OnlineConsultation[]
+
+  doctorReviews        DoctorReview[]
+  patientReports       PatientReports[]
+  previousDiseases     Disease[]
+  previousMedicines    Medicine[]
+  offlineConsultations OfflineConsultation[]
+  onlineConsultations  OnlineConsultation[]
 
   @@map("patients")
 }

@@ -66,6 +66,73 @@ export const postSignup = async (req, res, next) => {
   });
 };
 
+export const postPatientPreviousMedicinesAndDiseases = async (
+  req,
+  res,
+  next
+) => {
+  // #swagger.tags = ['Patient']
+  // #swagger.description = 'add paitient previous diseases, and previous medicines (medical profile)'
+  /*#swagger.security = [{
+      "bearerAuth": []
+    }]
+  */
+  /*#swagger.requestBody = {
+      required: true,
+      '@content': {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              diseases: { 
+                type: 'array',
+                example: [
+                  {
+                    name: 'heart disease',
+                    description: 'some description'
+                  }
+                ]
+              },
+              medicines: { 
+                type: 'array',
+                example: [
+                  {
+                    name: 'coldfree',
+                  }
+                ]
+              },
+            }
+          }
+        }
+      }
+    }
+  */
+
+  const { diseases, medicines } = req.body;
+
+  if (!diseases || !medicines) {
+    throw new BadRequestError();
+  }
+
+  await prisma.patient.update({
+    where: {
+      id: req.patient.id,
+    },
+    data: {
+      previousDiseases: {
+        create: diseases
+      },
+      previousMedicines: {
+        create: medicines
+      },
+    },
+  });
+
+  res.status(StatusCodes.OK).json({
+    message: 'medicines and disease inserted successfully'
+  });
+};
+
 export const getPatientProfile = async (req, res, next) => {
   // #swagger.tags = ['Patient']
 
