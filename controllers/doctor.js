@@ -711,3 +711,17 @@ export const getDoctorSchedule = async (req, res, next) => {
     clincs,
   });
 };
+
+export const getUnVerifiedDoctors = async (req, res, next) => {
+  // #swagger.tags = ['Doctor']
+
+  const doctors = await prisma.doctor.findMany({
+    where: {
+      isVeriyfied: false,
+    },
+  });
+
+  res.status(StatusCodes.OK).json({
+    doctors,
+  });
+};

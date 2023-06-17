@@ -189,6 +189,16 @@
         "responses": {}
       }
     },
+    "/api/doctors/unverified": {
+      "get": {
+        "tags": [
+          "Doctor"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
     "/api/doctors/schedule": {
       "get": {
         "tags": [

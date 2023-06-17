@@ -16,6 +16,7 @@ import {
   postClinc,
   postSignup,
   getDoctors,
+  getUnVerifiedDoctors,
 } from '../controllers/doctor.js';
 import { isAdminOrDoctor, isDoctor } from '../middlewares/auth.js';
 import upload from '../utils/upload.js';
@@ -23,6 +24,8 @@ import upload from '../utils/upload.js';
 const router = Router();
 
 router.get('/', getDoctors);
+
+router.get('/unverified', getUnVerifiedDoctors);
 
 router.get('/schedule', isDoctor, getDoctorSchedule);
 
