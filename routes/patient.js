@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  postPaymentIntent,
   getPatientProfile,
   postBookOnlineConsultation,
   postDiseasePrediction,
@@ -13,7 +14,7 @@ const router = Router();
 
 router.post('/signup', postSignup);
 
-router.post('/profile', isPatient, postPatientPreviousMedicinesAndDiseases)
+router.post('/profile', isPatient, postPatientPreviousMedicinesAndDiseases);
 
 router.get('/profile/:patientId', getPatientProfile);
 
@@ -22,5 +23,7 @@ router.post('/doctor-review', isPatient, postDoctorReview);
 router.post('/book/online', isPatient, postBookOnlineConsultation);
 
 router.post('/disease-prediction', postDiseasePrediction);
+
+router.post('/create-payment-intent', postPaymentIntent);
 
 export default router;

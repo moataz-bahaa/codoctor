@@ -10,6 +10,7 @@ import jwt from 'jsonwebtoken';
 import { hash } from '../utils/bcrypt.js';
 import { clearFile } from '../utils/upload.js';
 import axios from 'axios';
+import stripe from '../utils/stripe.js';
 
 export const postSignup = async (req, res, next) => {
   // #swagger.tags = ['Patient']
@@ -120,16 +121,16 @@ export const postPatientPreviousMedicinesAndDiseases = async (
     },
     data: {
       previousDiseases: {
-        create: diseases
+        create: diseases,
       },
       previousMedicines: {
-        create: medicines
+        create: medicines,
       },
     },
   });
 
   res.status(StatusCodes.OK).json({
-    message: 'medicines and disease inserted successfully'
+    message: 'medicines and disease inserted successfully',
   });
 };
 
@@ -364,4 +365,41 @@ export const postDiseasePrediction = async (req, res, next) => {
       length: inputArray.length,
     });
   }
+};
+
+export const postPaymentIntent = async (req, res, next) => {
+  // #swagger.tags = ['Payment']
+  /*#swagger.requestBody = {
+      required: true,
+      '@content': {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              amount: { type: 'number'},
+            }
+          }
+        }
+      }
+    }
+  */
+  /*#swagger.security = [{
+      "bearerAuth": []
+    }]
+  */
+
+  const { amount } = req.body;
+
+  if (!amount) {
+    throw new BadRequestError();
+  }
+
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: amount * 100,
+    currency: 'usd',
+  });
+
+  res.status(StatusCodes.OK).json({
+    clientSecret: paymentIntent.client_secret,
+  });
 };

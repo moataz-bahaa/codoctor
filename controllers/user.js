@@ -118,7 +118,11 @@ export const getChatWithMessages = async (req, res, next) => {
           user: true,
         },
       },
-      messages: true,
+      messages: {
+        orderBy: {
+          createdAt: 'asc',
+        },
+      },
     },
   });
 
