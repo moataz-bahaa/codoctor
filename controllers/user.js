@@ -66,7 +66,7 @@ export const getChats = async (req, res, next) => {
     }]
   */
 
-  const chats = await prisma.chat.findMany({
+  let chats = await prisma.chat.findMany({
     where: {
       users: {
         some: {
@@ -74,7 +74,23 @@ export const getChats = async (req, res, next) => {
         },
       },
     },
+    select: {
+      id: true,
+      name: true,
+
+      consultations: {
+        select: {
+          patientId: true,
+        },
+      },
+    },
   });
+
+  chats = chats.map((ch) => ({
+    id: ch.id,
+    name: ch.name,
+    patientId: ch.consultations?.[0].patientId,
+  }));
 
   res.status(StatusCodes.OK).json({
     chats,
